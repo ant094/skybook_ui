@@ -1,0 +1,55 @@
+
+.login{
+    display: flex;
+    padding: 160px 230px;
+    background-color: #F1F2F6;
+}
+.loginTitle{
+    flex-grow: 1;
+    width: 100%;
+}
+.loginTitle h1{
+    margin: 0;
+    font-size: 54px;
+    color: #F36E39;
+    font-weight: 800;
+    font-family: 'Montserrat';
+}
+
+.loginTitle h2{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.loginForm{
+    /* flex-grow: 1; */
+    margin-left: 80px;
+    padding: 20px 20px 30px 20px;
+    background-color: #FFFFFF;
+    width: 100%;
+    border-radius: 10px;
+}
+.my-facebook-button-class{
+        width: 100%;
+        background-color: #4b5998;
+        color: white;
+        padding: 8px 6px 8px 12px;
+        text-align: left;
+        border: 0px;
+        border-radius: 4px;
+        box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px,
+        rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+}
+
+i.fa.fa-facebook {
+    padding-right: 20px;
+    padding-left: 4px;
+    
+}
+
+button#register {
+    background-color: #23BE7E;
+    border: 1px solid #23BE7E;
+    margin: 0 20%;
+}

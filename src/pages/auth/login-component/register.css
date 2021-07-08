@@ -1,0 +1,16 @@
+.registerTitle h1 {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Montserrat';
+}
+
+.registerTitle h2 {
+    font-size: 13px;
+    color: #000000;
+    font-weight: 300;
+}
+button.close {
+    background-color: white;
+    border: 1px solid white;
+    font-size: 33px;
+}

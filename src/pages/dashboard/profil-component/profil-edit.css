@@ -1,0 +1,37 @@
+button.close {
+    background-color: white;
+    border: 1px solid white;
+    font-size: 33px;
+}
+.image-profile-edit{
+       width: 102px;
+       border-radius: 100%;
+       display: inline-block;
+       object-position: center;
+       height: 102px;
+       margin-right: 25px;
+       display: inline-block;
+}
+div .card-header-edit-post-profil{
+    font-size: 24px;
+    font-weight: bold;
+}
+#profilEdit{
+    background-color: orange;
+    border: 0 solid orange;
+    color: white;
+    font-size: 17px;
+}
+button.profil-edit-button{
+    background-color: aliceblue;
+    border:0 solid aliceblue;
+    font-size: 11px;
+    color: #F36E39;
+}
+
+button.profil-edit-button:hover{
+    background-color: orange;
+    border:0 solid orange;
+    font-size: 11px;
+    color: aliceblue;
+}
