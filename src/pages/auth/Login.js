@@ -20,6 +20,7 @@ export const Login = () => {
         setloginMessage("User not registered");
       }
       if (loginResponse.access_token) {
+        localStorage.setItem("token", loginResponse.access_token);
         handleLoginContext(loginResponse.access_token);
       }
     };
@@ -45,14 +46,14 @@ export const Login = () => {
 
       const handleClose = () => setShow(false);
       const handleShow = () => setShow(true);
-
   return (
     <ReactContext.Consumer>
       {
         value =>{
-          if (value.state.token !== "") {
-            return <Redirect to="/dashboard/home" />;
-          }
+          const localStorageToken = value.state.token;
+           if (localStorageToken) {
+             return <Redirect to="/dashboard" />;
+           }
             return (
               <div className="login">
                 <div className="loginTitle">

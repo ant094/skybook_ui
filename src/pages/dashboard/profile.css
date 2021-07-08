@@ -1,0 +1,58 @@
+.profile {
+    background-color: #F1F2F6;
+}
+
+.profil-card {
+    border: 0 solid #F1F2F6;
+}
+
+.profil-image {
+    width: 160px;
+    border-radius: 100%;
+    display: inline-block;
+    object-position: center;
+    height: 160px;
+    margin-right: 25px;
+}
+
+.profil-text {
+    display: inline-block;
+}
+
+.profil-text h1 {
+    display: inline-block;
+    color: #203758;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.profil-text button {
+    border: 0 solid #F1F2F6;
+    background-color: #F1F2F6;
+    margin: 0 25px;
+    color: #F36E39;
+}
+
+.profil-exit {
+    display: inline-block;
+    color: #6c757d !important;
+}
+
+.profil-follower {
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    color: #203758;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.profil-follower span:nth-child(2) {
+    margin: 0 25px;
+}
+
+.post-arrow-up {
+    float: right;
+    color: #6c757d !important;
+}

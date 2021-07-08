@@ -4,6 +4,7 @@ const API_ENDPOINT = {
   HOME: `${CONFIG.BASE_URL_API}/home`,
   LOGOUT: `${CONFIG.BASE_URL_API_HOME}/logout`,
   REGISTER: `${CONFIG.BASE_URL_API}/register`,
+  PROFIL_ID: (id) => `${CONFIG.BASE_URL_API_HOME}/profil/${id}`,
   REGISTER_PROVIDER:(provider)=> `${CONFIG.BASE_URL_API}register/${provider}`,
   REPORT_LIST_ID: (id) => `${CONFIG.BASE_URL_API}reports/${id}`,
   REPORT_DETAIL_ID: (id) => `${CONFIG.BASE_URL_API}reports/${id}/data`,

@@ -1,0 +1,47 @@
+div.card-header-clear-style {
+    background-color: white;
+    border-bottom: 1px solid white;
+}
+
+div.card-footer-clear-style {
+    background-color: white;
+    border-top: 1px solid white;
+}
+
+.image-post {
+    width: 60px;
+    border-radius: 100%;
+    display: inline-block;
+    object-position: center;
+    height: 60px;
+}
+
+.card-header-title-post {
+    display: inline-block;
+}
+
+.card-header-title-post h1 {
+    font-size: 18px;
+}
+
+.card-header-title-post h2 {
+    font-size: 12px;
+    color: #6c757d !important;
+}
+
+.card-footer-action-icon {
+    width: 30%;
+    margin-left: 70%
+}
+
+.footer-action-icon {
+    font-size: 24px;
+    margin: 0px 10%;
+}
+
+.post-setting {
+    position: absolute;
+    text-align: right;
+    right: 15px;
+    color: #6c757d !important;
+}

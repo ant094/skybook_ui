@@ -1,9 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
 
-#root{
+html, #root{
   background-color: #F1F2F6;
+ 
 }
 body {
   margin: 0;
   padding: 0;
+}
+#main{
+    width: 100%;
+    padding: 0 25%;
+    background-color: #F1F2F6;
 }

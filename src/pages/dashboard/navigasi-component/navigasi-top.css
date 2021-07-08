@@ -1,0 +1,48 @@
+.navigasi-top {
+    height: 70px;
+    border-collapse: collapse;
+    padding: 15px 25%;
+    margin: 0 auto;
+    top: 0;
+    position: sticky;
+    width: 100%;
+    background-color: white;
+    z-index: 99;
+}
+
+.navigasi-top-body {
+    display: flex;
+}
+
+.navigasi-top-left {
+    flex-grow: 1;
+}
+
+.navigasi-top-right {
+    flex-grow: 1;
+    text-align: right;
+}
+
+.image-profil {
+    width: 40px;
+    border-radius: 100%;
+    display: inline-block;
+    object-position: center;
+    height: 40px;
+}
+
+.image-brand {
+    width: 50px;
+    border-radius: 100%;
+    display: inline-block;
+    object-position: center;
+    height: 50px;
+}
+
+.navbar-notify {
+    font-size: 30px;
+    margin-right: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}

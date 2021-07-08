@@ -1,8 +1,10 @@
-import React, { Component, createContext } from "react";
+import React, { Component, createContext,  useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
+import { EmailNotifyVerify, EmailVerify } from "./pages/dashboard/EmailNotifyVerify";
 import { Home } from "./pages/dashboard/Home";
+import { Profil } from "./pages/dashboard/Profil";
 
 
 export const ReactContext = createContext();
@@ -10,14 +12,13 @@ const Provider = ReactContext.Provider;
 
 
 export default class Routes extends Component {
-
   state = {
-    token : "",
-  }
+    token: localStorage.getItem('token'),
+  };
 
   handleLogin = (dataToken) => {
-    return this.setState({token : dataToken});
-  }
+    return this.setState({ token: dataToken });
+  };
 
   render() {
     return (
@@ -25,15 +26,16 @@ export default class Routes extends Component {
         <Provider
           value={{
             state: this.state,
-            handleLogin : this.handleLogin
+            handleLogin: this.handleLogin,
           }}
         >
           <Switch>
             <Route exact path="/" component={Login} />
-            <Route path="/dashboard/home" component={Home} />
-            <Route path="/dashboard/profil" component={Home} />
+
+            <Route exact path="/dashboard" component={Home} />
             <Route path="/register" component={Register} />
-            {/* <Route exact path="/reports/:reportId" component={ReportDetail} /> */}
+            <Route path="/dashboard/email" component={EmailNotifyVerify} />
+            <Route path="/dashboard/profil/:id" component={Profil} />
           </Switch>
         </Provider>
       </Router>
