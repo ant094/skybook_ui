@@ -31,7 +31,8 @@ div.card-footer-clear-style {
 
 .card-footer-action-icon {
     width: 30%;
-    margin-left: 70%
+    margin-left: 70%;
+    cursor: pointer;
 }
 
 .footer-action-icon {
@@ -44,4 +45,8 @@ div.card-footer-clear-style {
     text-align: right;
     right: 15px;
     color: #6c757d !important;
+}
+
+.likeStyle{
+    color: orange;
 }

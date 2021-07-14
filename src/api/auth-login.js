@@ -4,7 +4,7 @@ class AuthApi {
       const data = {
         grant_type: "password",
         client_id: "1",
-        client_secret: "yTAIVmv4q2gyY6Cp6yLCILuXos94dyzlkf0ar1Un",
+        client_secret: "OZdROuFIpgnwLjS4CbTZlbsuZ9qXpbeoXaBb6ste",
         username: email,
         password: password,
         scope: "",

@@ -25,6 +25,7 @@
     font-size: 24px;
     font-weight: bold;
     margin: 0;
+    /* width: 268px; */
 }
 
 .profil-text button {
@@ -55,4 +56,24 @@
 .post-arrow-up {
     float: right;
     color: #6c757d !important;
+}
+
+button#follow {
+       background-color: aliceblue;
+       padding: 4px 20px;
+       font-size: 12px;
+       border-radius: 6px;
+       font-weight: 500;
+       position: relative;
+       top: -4px;
+}
+button#following {
+background-color: orange;
+padding: 4px 20px;
+font-size: 12px;
+border-radius: 6px;
+font-weight: 500;
+color: white;
+ position: relative;
+ top: -4px;
 }

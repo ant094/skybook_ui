@@ -1,13 +1,11 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import "./navigasi-top.css";
-import ari from "./../ari.jpg";
 import skydu from "./../skydu.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-export const NavigasiTop = () => {
+export const NavigasiTop = (props) => {
    let history = useHistory();
-
    function handleClickProfile() {
      history.push("/dashboard/profil/1");
    }
@@ -23,7 +21,7 @@ export const NavigasiTop = () => {
           </div>
           <div className="navigasi-top-right">
             <FontAwesomeIcon icon={faBell} className="navbar-notify" />
-            <img src={ari} alt="Girl in a jacket" className="image-profil" onClick={handleClickProfile}/>
+            <img src={props.imageUser} alt="Girl in a jacket" className="image-profil" onClick={handleClickProfile}/>
           </div>
         </div>
       </div>
