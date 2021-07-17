@@ -108,7 +108,7 @@ const viewBtnFollow = (isFollower, token )=>{
       );
    }
 }
-
+console.log(profilData?.regis_with ?? '');
   return (
     <ReactContext.Consumer>
       {(value) => {
@@ -122,13 +122,15 @@ const viewBtnFollow = (isFollower, token )=>{
         }
         return (
           <>
-            <NavigasiTop
-              data = {profilData}
-            />
+            <NavigasiTop data={profilData} />
             <div id="main">
               <Card.Body className="profile">
                 <img
-                  src={`${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`}
+                  src={
+                    profilData?.regis_with !== "email"
+                      ? profilData?.profil_picture
+                      : `${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`
+                  }
                   alt="Girl in a jacket"
                   className="profil-image"
                 />
@@ -157,7 +159,7 @@ const viewBtnFollow = (isFollower, token )=>{
                   <p>{profilData?.deskripsi ?? ""}</p>
                 </div>
               </Card.Body>
-              {profilData?.id === parseInt(id) ? <PostInput         /> : ""}
+              {profilData?.id === parseInt(id) ? <PostInput /> : ""}
               {profilData ? loadPosts(profilData.posts, value.state.token) : ""}
               <ProfilEdit show={show} handleClose={handleClose} />
             </div>

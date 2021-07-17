@@ -7,14 +7,17 @@ const API_ENDPOINT = {
   REGISTER: `${CONFIG.BASE_URL_API}/register`,
   PROFIL_ID: (id) => `${CONFIG.BASE_URL_API_HOME}/profil/${id}`,
   FOLLOWER_ID: (id) => `${CONFIG.BASE_URL_API_HOME}/follow/${id}`,
+
   UNFOLLOW: (id) => `${CONFIG.BASE_URL_API_HOME}/unfollow/${id}`,
+  COMMENT_POST_ID: (postId) => `${CONFIG.BASE_URL_API_HOME}/comment-post-id/${postId}`,
   FOLLOW: `${CONFIG.BASE_URL_API_HOME}/follow`,
   COMMENTPOST: `${CONFIG.BASE_URL_API_HOME}/comment-post`,
   LIKE_ID: (id) => `${CONFIG.BASE_URL_API_HOME}/like/${id}`,
   UNLIKE: (id) => `${CONFIG.BASE_URL_API_HOME}/unlike/${id}`,
   LIKE: `${CONFIG.BASE_URL_API_HOME}/like`,
-  TOTAL_LIKE: (id) => `${CONFIG.BASE_URL_API_HOME}/like/${id}`,
-  REGISTER_PROVIDER: (provider) => `${CONFIG.BASE_URL_API}/register/${provider}`,
+  TOTAL_LIKE: (id) => `${CONFIG.BASE_URL_API_HOME}/total-like/${id}`,
+  REGISTER_PROVIDER: (provider) =>
+    `${CONFIG.BASE_URL_API}/register/${provider}`,
   REPORT_LIST_ID: (id) => `${CONFIG.BASE_URL_API}/reports/${id}`,
   REPORT_DETAIL_ID: (id) => `${CONFIG.BASE_URL_API}/reports/${id}/data`,
   REPORT_DETAIL_DELETE: (id, reportId) =>

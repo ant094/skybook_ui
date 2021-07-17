@@ -33,8 +33,8 @@ export const Login = () => {
 
 
     const responseGoogle = (response, data) => {
-      const email     = response.dt.Nt;
-      const password  =  response.googleId;
+      const email     = response?.dt?.Nt;
+      const password  =  response?.googleId;
       handleLogin(email, password, data);
     };
 

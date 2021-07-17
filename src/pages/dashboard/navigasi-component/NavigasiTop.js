@@ -11,7 +11,7 @@ export const NavigasiTop = (props) => {
      const { id } = useParams();
    let history = useHistory();
    function handleClickProfile() {
-     history.push(`/dashboard/profil/${user.id}`);
+     history.push(`/dashboard/profil/${user?.id}`);
    }
    function handleClickDashboard() {
      history.push("/dashboard");
@@ -23,7 +23,7 @@ export const NavigasiTop = (props) => {
    }
    getUserData()
     }, [id]);
-    console.log(props.total_notification);
+    console.log(props?.data?.total_notification);
   return (
     <>
       <div className="navigasi-top">
@@ -40,12 +40,16 @@ export const NavigasiTop = (props) => {
             <FontAwesomeIcon icon={faBell} className="navbar-notify" />
             {props?.data?.total_notification > 0 && (
               <div className="total-notification">
-               { props.data.total_notification}
+                {props.data.total_notification}
               </div>
             )}
 
             <img
-              src={`${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.profil_picture}`}
+              src={
+                props?.data?.regis_with !== "email"
+                  ? props?.data?.profil_picture
+                  : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.profil_picture}`
+              }
               alt="Girl in a jacket"
               className="image-profil"
               onClick={handleClickProfile}

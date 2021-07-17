@@ -33,7 +33,7 @@ const getHome = async (token) =>
    useEffect(() => {
      async function fetchData() {
        let data = await getHome(localStorage.getItem("token"));
-       if (data.message === "Your email address is not verified.") {
+       if (data?.message === "Your email address is not verified.") {
          setEmailVerify(true);
        }
        return setProfilData(data);

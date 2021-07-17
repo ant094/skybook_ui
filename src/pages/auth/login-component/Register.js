@@ -33,15 +33,18 @@ export const Register = (props) => {
  
 const handleRegisterWithProvider = async (data, provider) => {
   const registerStatus = await AuthApi.registerWithProvider(data, provider);
+  console.log(registerStatus === "register user success");
   setRegisterMessage(registerStatus);
 };
-const responseGoogle = (response) => {
+const responseGoogle = async (response) => {
   const data = {
     email: response.dt.Nt,
     token: response.accessToken,
   };
-  console.log(data);
-  handleRegisterWithProvider(data, "google");
+ 
+ await handleRegisterWithProvider(data, "google");
+ 
+
 };
 
 const responseFacebook = (response) => {

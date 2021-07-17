@@ -10,6 +10,8 @@ import DashboardApi from '../../../api/api-dashboard';
 import Picker from "emoji-picker-react";
 export const Post = (props) => {
   const [likeStyle, setLikeStyle] = useState('');
+  const [totalLike, setTotalLike] = useState('');
+  const [showComment, setShowComment] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentLength, setCommentLength] = useState(1);
   const [emojiClickStyle, setEmojiClickStyle] = useState({ verticalAlign: 'middle'});
@@ -18,22 +20,28 @@ export const Post = (props) => {
   const handleLike = async (e, token) =>{
     const postId = e.target.id;
     if(likeStyle === "likeStyle"){
-      const total_like = await DashboardApi.totalLike(postId, token);
       const unlike = await DashboardApi.unlike(postId, token);
       if (unlike === "unliked post success") {
         setLikeStyle('');
-        // props.like(total_like);
+         const total_like = await DashboardApi.totalLike(postId, token);
+         console.log(total_like);
 
-        }
+         setTotalLike(total_like);
+        // props.like(total_like);
+      }
     }else{
-      const total_like = await DashboardApi.totalLike(postId, token);
       const like = await DashboardApi.like(postId,  token);
       if (like === "like post success") {
-          setLikeStyle('likeStyle');
-          // props.like(total_like);
-        }
+        setLikeStyle('likeStyle');
+         const total_like = await DashboardApi.totalLike(postId, token);
+         console.log(total_like);
+
+         setTotalLike(total_like);
+        // props.like(total_like);
+      }
     }
-  }
+   
+    }
   const isLike = async (post_id, token) => {
     const like = await DashboardApi.isLikeById(post_id, token);
     console.log('ini like'+like.success);
@@ -42,6 +50,7 @@ export const Post = (props) => {
     }
   };
 const [selectEmoji, setSelectEmoji] = useState(false);
+
 const handleComment = (event)=>{
 setCommentText(event.target.value);
 let c = Math.floor(commentText.length / 44) === 0 ?  1 : Math.ceil(commentText.length / 44);
@@ -52,7 +61,13 @@ const onEmojiClick = (event, emojiObject) => {
   setSelectEmoji(false);
   setCommentText(commentText + emojiObject.emoji);
 };
-
+const loadTotalLike = (likeTotal) =>{
+  let like = totalLike > 0 ? totalLike : likeTotal;
+  console.log('action like'+like);
+  if(like > 0 ){
+    return <div className="total-like-post">{like}</div>;
+  }
+}
 const handleEnter = async (e, token) =>{
    if(e.key === 'Enter'){
      e.preventDefault();
@@ -65,12 +80,71 @@ const handleEnter = async (e, token) =>{
      } 
    }
 }
-useEffect(() => {
-  
-    const loadIsLike = async (post_id, token) => await isLike(post_id, token);
-    loadIsLike(props.data.id, localStorage.getItem("token"));
-}, [props.data.id]);
+const handleShowComment = (e) => {
+  setShowComment(showComment ? false : true);
+};
+const viewComment = (data)=>{
+ return data?.map((data) => (
+    <Form className="pl-3 pr-3">
+      <div className="comment">
+        <img src={userDefault} alt="Girl in a jacket" className="comment-img" />
+        <Card className="card-load-comment">
+          <h1>{data?.name}</h1>
+          <p>{data?.pivot?.comment}</p>
+        </Card>
+      </div>
+    </Form>
+ ));
+}
 
+const loadComment =  (data) =>{
+  return (
+    <div>
+     {viewComment(data.comment)}
+      <Form className="pl-3 pr-3">
+        <div className="comment">
+          <img
+            src={userDefault}
+            alt="Girl in a jacket"
+            className="comment-img"
+          />
+          <Form.Control
+            placeholder="Tulis komentar kamu"
+            className="comment-text"
+            value={commentText}
+            as="textarea"
+            id={data.id}
+            rows={commentLength}
+            onKeyPress={(e) => handleEnter(e, token)}
+            onChange={handleComment}
+          />
+
+          <FontAwesomeIcon
+            icon={faSmile}
+            className="comment-icon"
+            style={emojiClickStyle}
+            onClick={() => setSelectEmoji(selectEmoji ? false : true)}
+          />
+          <Form.Text className="comment-text-muted">
+            Tekan Enter untuk mengirim
+          </Form.Text>
+          {selectEmoji && (
+            <Picker
+              onEmojiClick={onEmojiClick}
+              disableSkinTonePicker
+              disableSearchBar="true"
+            />
+          )}
+        </div>
+      </Form>
+    </div>
+ );
+}
+useEffect(() => {
+  const loadIsLike = async (post_id, token) => await isLike(post_id, token);
+  loadIsLike(props.data.id, localStorage.getItem("token"));
+}, [props.data.id]);
+// console.log('ini'+ totalLike);
     return (
       <div>
         <Card className="mb-2 pt-2">
@@ -106,13 +180,12 @@ useEffect(() => {
                 icon={faThumbsUp}
                 className={`footer-action-icon ${likeStyle}`}
               />
-              {props.data.total_like > 0 && (
-                <div className="total-like-post">{props.data.total_like}</div>
-              )}
+
+              {loadTotalLike(props.data.total_like)}
 
               <FontAwesomeIcon
-                onClick={(e) => handleLike(e)}
-                id={props.data.user.id}
+                onClick={(e) => handleShowComment(e)}
+                id={props.data.id}
                 icon={faCommentAlt}
                 className="footer-action-icon"
               />
@@ -122,58 +195,7 @@ useEffect(() => {
               />
             </div>
           </Card.Footer>
-          <Form className="pl-3 pr-3">
-            <div className="comment">
-              <img
-                src={userDefault}
-                alt="Girl in a jacket"
-                className="comment-img"
-              />
-              <Card className="card-load-comment">
-                <h1>Ari Cahyono</h1>
-                <p>
-                  dawdada loredawmdawiod dawdada loredawmdawiod dawdada
-                  loredawmdawiod dawdada loredawmdawiod dawdada loredawmdawiod
-                </p>
-              </Card>
-            </div>
-          </Form>
-          <Form className="pl-3 pr-3">
-            <div className="comment">
-              <img
-                src={userDefault}
-                alt="Girl in a jacket"
-                className="comment-img"
-              />
-              <Form.Control
-                placeholder="Tulis komentar kamu"
-                className="comment-text"
-                value={commentText}
-                as="textarea"
-                id={props.data.id}
-                rows={commentLength}
-                onKeyPress={(e) => handleEnter(e, token)}
-                onChange={handleComment}
-              />
-
-              <FontAwesomeIcon
-                icon={faSmile}
-                className="comment-icon"
-                style={emojiClickStyle}
-                onClick={() => setSelectEmoji(selectEmoji ? false : true)}
-              />
-              <Form.Text className="comment-text-muted">
-                Tekan Enter untuk mengirim
-              </Form.Text>
-              {selectEmoji && (
-                <Picker
-                  onEmojiClick={onEmojiClick}
-                  disableSkinTonePicker
-                  disableSearchBar="true"
-                />
-              )}
-            </div>
-          </Form>
+          {showComment && loadComment(props.data)}
         </Card>
       </div>
     );

@@ -112,6 +112,18 @@ class DashboardApi {
     const responseJson = await response.json();
     return responseJson.success;
   }
+  static async loadCommentByPostId(postId, token) {
+    const response = await fetch(API_ENDPOINT.COMMENT_POST_ID(postId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+
   static async inputComment(postId, commentText, token) {
     const data = {
       post_id: postId,
