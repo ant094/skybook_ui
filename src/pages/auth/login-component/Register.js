@@ -16,7 +16,7 @@ export const Register = (props) => {
    const registerStatus = await AuthApi.register(data);
    if(registerStatus.errors){
      setRegisterMessage(registerStatus.errors);
-   }
+    }
  };
 
  const handleSubmit = async (e) => {
@@ -40,6 +40,7 @@ const responseGoogle = (response) => {
     email: response.dt.Nt,
     token: response.accessToken,
   };
+  console.log(data);
   handleRegisterWithProvider(data, "google");
 };
 
@@ -75,8 +76,8 @@ const responseFacebook = (response) => {
               />
 
               <Form.Text className="text-danger">
-                {RegisterMessage.name !== "undefined"
-                  ? RegisterMessage.name
+                {RegisterMessage?.name !== "undefined"
+                  ? RegisterMessage?.name
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -89,8 +90,8 @@ const responseFacebook = (response) => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage.email !== "undefined"
-                  ? RegisterMessage.email
+                {RegisterMessage?.email !== "undefined"
+                  ? RegisterMessage?.email
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -104,8 +105,8 @@ const responseFacebook = (response) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage.password !== "undefined"
-                  ? RegisterMessage.password
+                {RegisterMessage?.password !== "undefined"
+                  ? RegisterMessage?.password
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -118,8 +119,8 @@ const responseFacebook = (response) => {
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage.password_confirmation !== "undefined"
-                  ? RegisterMessage.password_confirmation
+                {RegisterMessage?.password_confirmation !== "undefined"
+                  ? RegisterMessage?.password_confirmation
                   : ""}
               </Form.Text>
             </Form.Group>

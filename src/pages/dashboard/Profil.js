@@ -22,6 +22,7 @@ export const Profil = () => {
   const [profilData, setProfilData] = useState(null);
   const [emailVerify, setEmailVerify] = useState(false);
   const [follower, setFollower] = useState(false);
+  const [like, setLike] = useState(0);
   const handleLogout = async (token, handleLoginContext) => {
     const loginResponse = await AuthApi.logout(token);
     console.log(loginResponse);
@@ -46,7 +47,7 @@ export const Profil = () => {
          return setProfilData(data.success);
      }
      fetchData();
-   },[id]);
+   },[id, like]);
   const handleFollow = async (e, token) => {
     const userFollowerId = e.target.value;
     const followCheck =  await DashboardApi.postFollow(userFollowerId, token);
@@ -64,7 +65,7 @@ export const Profil = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const loadPosts = (data, token) =>{
-   return data.map((data)=><Post key={data.id} token={token} data={data}/>)
+   return data.map((data)=><Post key={data.id} token={token} data={data} like={(data)=>{setLike(data)}}/>)
   }
 if(emailVerify)
 {
@@ -80,6 +81,7 @@ if(emailVerify)
 }
 console.log('profil-check '+profilData?.name ?? "");
 console.log('profil-check '+id);
+console.log('iin like '+like ?? '');
 
 const viewBtnFollow = (isFollower, token )=>{
    if(isFollower){
@@ -121,12 +123,12 @@ const viewBtnFollow = (isFollower, token )=>{
         return (
           <>
             <NavigasiTop
-              imageUser={profilData?.profil_picture ?? userDefault}
+              data = {profilData}
             />
             <div id="main">
               <Card.Body className="profile">
                 <img
-                  src={profilData?.profil_picture ?? userDefault}
+                  src={`${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`}
                   alt="Girl in a jacket"
                   className="profil-image"
                 />
@@ -135,7 +137,8 @@ const viewBtnFollow = (isFollower, token )=>{
                   {profilData?.id === parseInt(id) && (
                     <button onClick={handleShow}>Edit Profil</button>
                   )}
-                  { profilData?.id !== parseInt(id) && viewBtnFollow(follower, value.state.token)}
+                  {profilData?.id !== parseInt(id) &&
+                    viewBtnFollow(follower, value.state.token)}
 
                   {profilData?.id === parseInt(id) && (
                     <FontAwesomeIcon
@@ -154,7 +157,7 @@ const viewBtnFollow = (isFollower, token )=>{
                   <p>{profilData?.deskripsi ?? ""}</p>
                 </div>
               </Card.Body>
-              {id === "1" ? <PostInput /> : ""}
+              {profilData?.id === parseInt(id) ? <PostInput         /> : ""}
               {profilData ? loadPosts(profilData.posts, value.state.token) : ""}
               <ProfilEdit show={show} handleClose={handleClose} />
             </div>

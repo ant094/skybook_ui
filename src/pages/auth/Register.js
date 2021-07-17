@@ -29,8 +29,9 @@ export const Register = () => {
 
 const handleRegisterWithProvider = async (data, provider) => {
   const registerStatus = await AuthApi.registerWithProvider(data, provider);
-  console.log(registerStatus );
-  setRegisterMessage(registerStatus);
+  if(provider === "email"){
+    setRegisterMessage(registerStatus);
+  }
 };
   const responseGoogle = (response) => {
     const data = {

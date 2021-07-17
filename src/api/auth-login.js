@@ -4,7 +4,7 @@ class AuthApi {
       const data = {
         grant_type: "password",
         client_id: "1",
-        client_secret: "OZdROuFIpgnwLjS4CbTZlbsuZ9qXpbeoXaBb6ste",
+        client_secret: "mJuySldQbGT1rrH2RCynrrQopYg9QKsep3pdsXUn",
         username: email,
         password: password,
         scope: "",
@@ -66,6 +66,17 @@ class AuthApi {
     const response = await fetch(API_ENDPOINT.HOME);
     const responseJson = await response.json();
     return responseJson;
+  }
+  static async user(token) {
+     const response = await fetch(API_ENDPOINT.USER, {
+       headers: {
+         Authorization: `Bearer ${token}`,
+         "Content-Type": "application/json",
+         "X-Requested-With": "XMLHttpRequest",
+       },
+     });
+     const responseJson = await response.json();
+     return responseJson;
   }
 }
 export default AuthApi;

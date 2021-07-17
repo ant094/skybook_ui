@@ -77,7 +77,47 @@ class DashboardApi {
     const data = {
       post_id: postId,
     };
-    const response = await fetch(API_ENDPOINT.like, {
+    const response = await fetch(API_ENDPOINT.LIKE, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+
+  static async totalLike(postId, token) {
+    const response = await fetch(API_ENDPOINT.TOTAL_LIKE(postId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+  static async getHome(token) {
+    const response = await fetch(API_ENDPOINT.HOME, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+  static async inputComment(postId, commentText, token) {
+    const data = {
+      post_id: postId,
+      comment: commentText,
+    };
+    const response = await fetch(API_ENDPOINT.COMMENTPOST, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

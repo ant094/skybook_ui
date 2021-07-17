@@ -46,3 +46,18 @@
     vertical-align: middle;
     line-height: normal;
 }
+.total-notification{
+    position: relative;
+    display: inline-block;
+    top: -13px;
+    left: -30px;
+    padding: 1px;
+    font-weight: 700;
+    border-radius: 100%;
+    border: 1px solid #ff0000;
+    font-size: 13px;
+    background-color: #FF0000;
+    color: white;
+    min-width: 20px;
+    text-align: center;
+    }
