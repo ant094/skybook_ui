@@ -3,7 +3,6 @@ import { Redirect, useParams } from "react-router-dom";
 import { ReactContext } from "../../routes";
 import { Card } from "react-bootstrap";
 import "./profil.css";
-import userDefault from "./../../images/default-system/user-default.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { ProfilEdit } from "./profil-component/ProfilEdit";
@@ -22,6 +21,13 @@ export const Profil = () => {
   const [profilData, setProfilData] = useState(null);
   const [emailVerify, setEmailVerify] = useState(false);
   const [follower, setFollower] = useState(false);
+  const [profilUpdate, setProfilUpdate] = useState(false);
+const [postUpdate, setPostUpdate] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editModeId, setEditModeId] = useState(false);
+const handlePostDelete = () => {
+  setPostUpdate(postUpdate ? false : true);
+};
   const [like, setLike] = useState(0);
   const handleLogout = async (token, handleLoginContext) => {
     const loginResponse = await AuthApi.logout(token);
@@ -36,18 +42,19 @@ export const Profil = () => {
   }
   const MySwal = withReactContent(Swal);
 
-   useEffect( () => {
-     async function fetchData(){
-       let data = await getProfilData(id, localStorage.getItem('token'));
-        isFollower(id, localStorage.getItem("token"));
-        console.log("profil-checkdawda " + id);
-       if(data.message === "Your email address is not verified."){
-          setEmailVerify(true);
+   useEffect(() => {
+     async function fetchData() {
+       let data = await getProfilData(id, localStorage.getItem("token"));
+       isFollower(id, localStorage.getItem("token"));
+
+       if (data.message === "Your email address is not verified.") {
+         setEmailVerify(true);
        }
-         return setProfilData(data.success);
+       return setProfilData(data.success);
      }
      fetchData();
-   },[id, like]);
+     setProfilUpdate(false);
+   }, [id, like, profilUpdate, postUpdate, follower]);
   const handleFollow = async (e, token) => {
     const userFollowerId = e.target.value;
     const followCheck =  await DashboardApi.postFollow(userFollowerId, token);
@@ -62,26 +69,40 @@ export const Profil = () => {
         setFollower(false);
     } 
   }
+const handleEditMode = (id) => {
+  setEditMode(true);
+  setEditModeId(id);
+};
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const loadPosts = (data, token) =>{
-   return data.map((data)=><Post key={data.id} token={token} data={data} like={(data)=>{setLike(data)}}/>)
+   return data?.map((data) => (
+     <Post
+       delete={handlePostDelete.bind(handlePostDelete)}
+       key={data.id}
+       token={token}
+       data={data}
+       editMode={handleEditMode.bind(handleEditMode)}
+       profilData={profilData}
+       like={(data) => {
+         setLike(data);
+       }}
+     />
+   ));
   }
 if(emailVerify)
 {
-    // MySwal.fire({
-    //   title: <p>Mohon Verifikasi Email Terlebih Dahulu!</p>,
-    //   showCloseButton: false,
-    //   showCancelButton: false,
-    //   showConfirmButton: false,
-    //   allowOutsideClick: false,
-    //   allowEscapeKey: false,
-    //   icon : 'warning',
-    // });
+    MySwal.fire({
+      title: <p>Mohon Verifikasi Email Terlebih Dahulu!</p>,
+      showCloseButton: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      icon : 'warning',
+    });
 }
-console.log('profil-check '+profilData?.name ?? "");
-console.log('profil-check '+id);
-console.log('iin like '+like ?? '');
 
 const viewBtnFollow = (isFollower, token )=>{
    if(isFollower){
@@ -108,7 +129,6 @@ const viewBtnFollow = (isFollower, token )=>{
       );
    }
 }
-console.log(profilData?.regis_with ?? '');
   return (
     <ReactContext.Consumer>
       {(value) => {
@@ -122,46 +142,69 @@ console.log(profilData?.regis_with ?? '');
         }
         return (
           <>
-            <NavigasiTop data={profilData} />
+            <NavigasiTop data={profilData} update={profilUpdate} />
             <div id="main">
-              <Card.Body className="profile">
-                <img
-                  src={
-                    profilData?.regis_with !== "email"
-                      ? profilData?.profil_picture
-                      : `${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`
-                  }
-                  alt="Girl in a jacket"
-                  className="profil-image"
-                />
-                <div className="profil-text">
-                  <h1>{profilData?.name ?? ""}</h1>
-                  {profilData?.id === parseInt(id) && (
-                    <button onClick={handleShow}>Edit Profil</button>
-                  )}
-                  {profilData?.id !== parseInt(id) &&
-                    viewBtnFollow(follower, value.state.token)}
+              {profilData && (
+                <Card.Body className="profile">
+                  <img
+                    src={
+                      profilData?.regis_with !== "email"
+                        ? profilData?.profil_picture
+                        : `${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`
+                    }
+                    alt="Girl in a jacket"
+                    className="profil-image"
+                  />
+                  <div className="profil-text">
+                    <h1>{profilData?.name ?? ""}</h1>
+                    {profilData?.user_auth_id == id && (
+                      <button onClick={handleShow}>Edit Profil</button>
+                    )}
+                    {profilData?.user_auth_id != id &&
+                      viewBtnFollow(follower, value.state.token)}
 
-                  {profilData?.id === parseInt(id) && (
-                    <FontAwesomeIcon
-                      icon={faSignOutAlt}
-                      onClick={() =>
-                        handleLogout(value.state.token, value.handleLogin)
-                      }
-                      className="profil-exit"
-                    />
-                  )}
-                  <div className="profil-follower">
-                    <span>{profilData?.total_posts ?? ""} Posts</span>
-                    <span>{profilData?.total_followers ?? ""} Followers</span>
-                    <span>{profilData?.total_following ?? ""} Following</span>
+                    {profilData?.user_auth_id == id && (
+                      <FontAwesomeIcon
+                        icon={faSignOutAlt}
+                        onClick={() =>
+                          handleLogout(value.state.token, value.handleLogin)
+                        }
+                        className="profil-exit"
+                      />
+                    )}
+                    <div className="profil-follower">
+                      <span>{profilData?.total_posts ?? ""} Posts</span>
+                      <span>{profilData?.total_followers ?? ""} Followers</span>
+                      <span>{profilData?.total_following ?? ""} Following</span>
+                    </div>
+                    <p>{profilData?.deskripsi ?? ""}</p>
                   </div>
-                  <p>{profilData?.deskripsi ?? ""}</p>
-                </div>
-              </Card.Body>
-              {profilData?.id === parseInt(id) ? <PostInput /> : ""}
+                </Card.Body>
+              )}
+              {profilData?.user_auth_id == id && (
+                <PostInput
+                  data={profilData}
+                  editMode={editMode}
+                  closeEditMode={() => setEditMode(false)}
+                  editModeId={editModeId}
+                  updateInputPost={() =>
+                    setPostUpdate(postUpdate ? false : true)
+                  }
+                />
+              )}
               {profilData ? loadPosts(profilData.posts, value.state.token) : ""}
-              <ProfilEdit show={show} handleClose={handleClose} />
+              <ProfilEdit
+                show={show}
+                handleClose={handleClose}
+                data={profilData}
+                token={value.state.token}
+                update={() => setProfilUpdate(true)}
+              />
+              {profilData?.posts?.length === 0 && (
+                <Card body className="post-empty">
+                  belum ada post yang di buat
+                </Card>
+              )}
             </div>
           </>
         );

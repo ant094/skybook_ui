@@ -61,3 +61,29 @@
     min-width: 20px;
     text-align: center;
     }
+
+    .notification-result{
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        margin-bottom: 0;
+        padding-left: 0;
+        border-radius: .25rem;
+        text-align: start;
+        margin-left: 20%;
+    }
+.list-group-item {
+    padding: 6px 12px;
+}
+    .list-group-item img{
+        height: 26px;
+        width: 26px;
+        display: inline-block;
+    }
+
+    .list-group-item p{
+        margin-left: 4px;
+        font-size: 13px;
+        margin-bottom: 0px;
+        display: inline-block;
+    }

@@ -37,7 +37,7 @@ div.card-footer-clear-style {
 
 .footer-action-icon {
     font-size: 24px;
-    margin: 0px 10%;
+    margin: 0px 8%;
 }
 
 .post-setting {
@@ -47,6 +47,15 @@ div.card-footer-clear-style {
     color: #6c757d !important;
 }
 
+
+div.post-setting-action{
+        vertical-align: middle;
+        margin-left: 6px;
+        position: relative;
+        display: inline-block;
+        top: -28px;
+        left: 72%;
+}
 .likeStyle{
     color: orange;
 }
@@ -95,9 +104,11 @@ div aside.emoji-picker-react {
 .card-load-comment.card {
     display: inline-block;
     padding: 12px 6px;
-    max-width: 80%;
+    max-width: 67%;
     vertical-align: top;
     background-color: #F1F2F6;
+      vertical-align: middle;
+      height: 100%;
     margin-left: 6px;
 }
 .card-load-comment.card h1{
@@ -119,4 +130,80 @@ div aside.emoji-picker-react {
     font-size: 13px;
     min-width: 20px;
     text-align: center;
+}
+
+.total-comment-post {
+    position: relative;
+    display: inline-block;
+    top: -13px;
+    left: -22px;
+    padding: 1px;
+    font-weight: 700;
+    border-radius: 100%;
+    font-size: 13px;
+    min-width: 20px;
+    text-align: center;
+}
+#buttonPost{
+    background-color: slategray;
+    border : 1px solid slategray;
+    color: white;
+    margin-left: 25%;
+    width: 50%;
+    font-size: 17px;
+}
+.dropzone{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-width: 2px;
+    border-radius: 2px;
+    border-color: #eeeeee;
+    border-style: dashed;
+    background-color: #fafafa;
+    color: #bdbdbd;
+    outline: none;
+    transition: border .24s ease-in-out;
+}
+.comment-setting{
+      margin-left: 8px;
+      vertical-align: middle;
+      color: #788292;
+}
+div.comment-setting-action{
+    vertical-align: middle;
+    margin-left: 6px;
+    display: inline-block;
+}
+
+div.list-group-comment-action{
+    padding: 4px 8px;
+    box-sizing: border-box;
+}
+div.list-group-comment-action{
+    padding: 4px 8px;
+    box-sizing: border-box;
+}
+div.list-group-comment-action p{
+    display: inline-block;
+    margin-left: 4px;
+    margin-bottom: 0;
+    font-size: 11px;
+}
+.list-group-comment-icon-action{
+    display: inline-block;
+    font-size: 11px;
+}
+
+.button-action-comment{
+background: white;
+border: 0 solid;
+padding: 0px;
+}
+
+.post-image{
+        width: 100%;
+        padding-bottom: 12px;
 }

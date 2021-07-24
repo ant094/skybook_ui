@@ -77,3 +77,12 @@ color: white;
  position: relative;
  top: -4px;
 }
+
+div.post-empty.card {
+       height: 200px;
+       text-align: center;
+       text-transform: uppercase;
+       padding-top: 10%;
+       color: #828284;
+       font-weight: 700;
+}

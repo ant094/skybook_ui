@@ -35,16 +35,16 @@ const handleRegisterWithProvider = async (data, provider) => {
 };
   const responseGoogle = (response) => {
     const data = {
-      email: response.dt.Nt,
-      token: response.accessToken,
+      email: response?.dt?.Nt,
+      token: response?.accessToken,
     };
     handleRegisterWithProvider(data, "google");
   };
 
   const responseFacebook = (response) => {
     const data = {
-      email: response.email,
-      token: response.accessToken,
+      email: response?.email,
+      token: response?.accessToken,
     };
     handleRegisterWithProvider(data, "facebook");
   };

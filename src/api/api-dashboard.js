@@ -22,8 +22,13 @@ class DashboardApi {
     const responseJson = await response.json();
     return responseJson;
   }
-  static async isLikeById(like_id, token) {
-    const response = await fetch(API_ENDPOINT.LIKE_ID(like_id), {
+  static async isLikeById(post_id, token) {
+    const data = {
+      post_id: post_id,
+    };
+    const response = await fetch(API_ENDPOINT.LIKE_ID, {
+      method: "POST",
+      body: JSON.stringify(data),
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -31,7 +36,7 @@ class DashboardApi {
       },
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson.success;
   }
   static async postFollow(userFollowerId, token) {
     const data = {
@@ -48,6 +53,21 @@ class DashboardApi {
     });
     const responseJson = await response.json();
     return responseJson.success;
+  }
+  static async inputPost(caption, image) {
+    const formData = new FormData();
+    formData.append("caption", caption ?? "");
+    formData.append("image", image);
+    const response = await fetch(API_ENDPOINT.POST_INPUT, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json;",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson;
   }
   static async deleteUnfollow(userFollowerId, token) {
     const response = await fetch(API_ENDPOINT.UNFOLLOW(userFollowerId), {
@@ -101,6 +121,17 @@ class DashboardApi {
     const responseJson = await response.json();
     return responseJson.success;
   }
+  static async totalComment(postId, token) {
+    const response = await fetch(API_ENDPOINT.TOTAL_COMMENT(postId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
   static async getHome(token) {
     const response = await fetch(API_ENDPOINT.HOME, {
       headers: {
@@ -110,7 +141,7 @@ class DashboardApi {
       },
     });
     const responseJson = await response.json();
-    return responseJson.success;
+    return responseJson;
   }
   static async loadCommentByPostId(postId, token) {
     const response = await fetch(API_ENDPOINT.COMMENT_POST_ID(postId), {
@@ -136,6 +167,89 @@ class DashboardApi {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+
+  static async deleteComment(commentId, token) {
+    const response = await fetch(API_ENDPOINT.DELETE_COMMENT(commentId), {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+  static async deletePost(postId, token) {
+    const response = await fetch(API_ENDPOINT.DELETE_POST(postId), {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+  static async editComment(postId, commentData) {
+    const data = {
+      comment: commentData,
+    };
+    const response = await fetch(API_ENDPOINT.COMMENT_EDIT(postId), {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+
+  static async getNotification() {
+    const response = await fetch(API_ENDPOINT.NOTIFICATION, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+
+  static async postShowEdit(postId) {
+    const response = await fetch(API_ENDPOINT.POST_SHOW_EDIT(postId), {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.success;
+  }
+  static async postEdit(postId, caption , image) {
+
+    
+ const formData = new FormData();
+ formData.append("caption", caption );
+ formData.append("image", image );
+
+    const response = await fetch(API_ENDPOINT.POST_EDIT(postId), {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     const responseJson = await response.json();

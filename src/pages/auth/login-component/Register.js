@@ -28,6 +28,8 @@ export const Register = (props) => {
      password_confirmation: passwordConfirmation,
    };
    handleRegister(data); 
+  props.handleClose();
+
  };
 
  
@@ -35,23 +37,21 @@ const handleRegisterWithProvider = async (data, provider) => {
   const registerStatus = await AuthApi.registerWithProvider(data, provider);
   console.log(registerStatus === "register user success");
   setRegisterMessage(registerStatus);
+    props.handleClose();
 };
 const responseGoogle = async (response) => {
   const data = {
-    email: response.dt.Nt,
-    token: response.accessToken,
+    email: response?.dt?.Nt,
+    token: response?.accessToken,
   };
- 
  await handleRegisterWithProvider(data, "google");
- 
-
 };
 
 const responseFacebook = (response) => {
   console.log(response); 
   const data = {
-    email: response.email,
-    token: response.accessToken,
+    email: response?.email,
+    token: response?.accessToken,
   };
   handleRegisterWithProvider(data, "facebook");
 };
