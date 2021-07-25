@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import "./post.css";
-import userDefault from "./../../../images/default-system/user-default.png";
+import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisH, faShareAlt } from "@fortawesome/free-solid-svg-icons";
+import {  faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import { faCommentAlt, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
-import { Card, Form } from 'react-bootstrap';
-import CONFIG from '../../../config/config';
-import DashboardApi from '../../../api/api-dashboard';
+import { Card} from 'react-bootstrap';
+import CONFIG from '../../../Config';
+import DashboardApi from '../../../Api/api-dashboard';
 import { Comment } from '../Comment';
 import { PostAction } from '../PostAction';
 import DOMPurify from 'dompurify';
@@ -85,9 +84,9 @@ export const Post = (props) => {
         <Card.Header className="card-header-clear-style">
           <img
             src={
-              props.data.user?.profil_picture
-                ? `${CONFIG.BASE_URL_API_IMAGE}/${props.data.user.profil_picture}`
-                : userDefault
+                 props?.data?.user?.profil_picture?.includes("http")
+      ? props?.data?.user?.profil_picture
+      : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
             }
             alt="Girl in a jacket"
             className="image-post"

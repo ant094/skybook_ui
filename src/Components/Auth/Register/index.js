@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import './register.css'
+import './index.css'
 import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login";
 import { Form, Button, Modal} from "react-bootstrap";
-import AuthApi from "../../../api/auth-login";
+import AuthApi from "../../../Api/auth-login";
 
 export const Register = (props) => {
  const [name, setName] = useState("");
@@ -11,12 +11,20 @@ export const Register = (props) => {
  const [password, setPassword] = useState("");
  const [passwordConfirmation, setPasswordConfirmation] = useState("");
  const [RegisterMessage, setRegisterMessage] = useState("");
+ const [RegisterMessageAlready, setRegisterMessageAlready] = useState("");
 
  const handleRegister = async (data) => {
    const registerStatus = await AuthApi.register(data);
-   if(registerStatus.errors){
+   if (registerStatus.errors) {
+     setRegisterMessageAlready("");
      setRegisterMessage(registerStatus.errors);
-    }
+    } else if (registerStatus.error === "user registered") {
+     setRegisterMessage("");
+     setRegisterMessageAlready(registerStatus);
+   } else {
+    handleClose()
+   }
+    
  };
 
  const handleSubmit = async (e) => {
@@ -28,20 +36,23 @@ export const Register = (props) => {
      password_confirmation: passwordConfirmation,
    };
    handleRegister(data); 
-  props.handleClose();
 
  };
 
  
 const handleRegisterWithProvider = async (data, provider) => {
   const registerStatus = await AuthApi.registerWithProvider(data, provider);
-  console.log(registerStatus === "register user success");
-  setRegisterMessage(registerStatus);
-    props.handleClose();
+  if (registerStatus.error === "user registered") {
+  console.log(registerStatus.error)
+  setRegisterMessage("");
+  setRegisterMessageAlready(registerStatus);
+} else {
+ handleClose()
+}
 };
 const responseGoogle = async (response) => {
   const data = {
-    email: response?.dt?.Nt,
+    email: response?.profileObj?.email,
     token: response?.accessToken,
   };
  await handleRegisterWithProvider(data, "google");
@@ -56,9 +67,17 @@ const responseFacebook = (response) => {
   handleRegisterWithProvider(data, "facebook");
 };
 
+
+const handleClose = () => {
+    props.handleClose();
+    props.hadleShowAlertRegister();
+    setRegisterMessage("");
+    setRegisterMessageAlready("");
+}
+
   return (
     <>
-      <Modal show={props.show} size="sm" onHide={() => props.handleClose()}>
+      <Modal show={props.show} size="sm" onHide={() => handleClose()}>
         <Modal.Header closeButton closeLabel={""}>
           <Modal.Title>
             <div className="registerTitle">
@@ -69,6 +88,11 @@ const responseFacebook = (response) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => handleSubmit(e)}>
+            <Form.Group className="mb-3 text-center">
+              <Form.Text className=" text-danger ">
+                {RegisterMessageAlready !== "" ? "user already register" : ""}
+              </Form.Text>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
@@ -135,7 +159,7 @@ const responseFacebook = (response) => {
               <p className="text-center mb-1">Atau Daftar Dengan</p>
               <GoogleLogin
                 clientId="458456914945-n6m3evan8k2ovagei6mnd4o3tpvlkfed.apps.googleusercontent.com"
-                buttonText="Login"
+                buttonText="Daftar"
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
               />
@@ -144,7 +168,7 @@ const responseFacebook = (response) => {
                 fields="name,email,picture"
                 callback={responseFacebook}
                 cssClass="my-facebook-button-class"
-                textButton=" Login"
+                textButton=" Daftar"
                 icon="fa-facebook"
               />
             </div>

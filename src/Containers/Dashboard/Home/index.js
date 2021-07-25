@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
-import { ReactContext } from "../../routes";
-import "./home.css";
-import { NavigasiTop } from "./navigasi-component/NavigasiTop";
-import { PostInput } from "./post-component/PostInput";
-import { Post } from "./post-component/Post";
-import CONFIG from "../../config/config";
-import DashboardApi from "../../api/api-dashboard";
+import { ReactContext } from "../../../routes";
+import { NavigasiTop } from "../../../Components/Navigasi/NavigasiTop";
+import { PostInput } from "../../../Components/Dashboard/PostInput";
+import { Post } from "../../../Components/Dashboard/Post";
+import DashboardApi from "../../../Api/api-dashboard";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 export const Home = () => {
@@ -84,13 +82,13 @@ setEditModeId(id);
           <>
             <NavigasiTop data={profilData} />
             <div id="main" className=" mt-3">
-              <PostInput
+              {profilData && <PostInput
                 data={profilData}
                 closeEditMode={()=>setEditMode(false)}
                 editMode={editMode}
                 editModeId={editModeId}
                 updateInputPost={() => setPostUpdate(postUpdate ? false : true) }
-              />
+              />}
               {profilData && loadPosts(profilData, value.state.token)}
             </div>
           </>

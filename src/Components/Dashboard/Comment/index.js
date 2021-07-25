@@ -5,9 +5,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Card, Form } from "react-bootstrap";
 import Picker from "emoji-picker-react";
-import DashboardApi from "../../api/api-dashboard";
-import CONFIG from "../../config/config";
-import { CommentAction } from "./CommentAction";
+import DashboardApi from "../../../Api/api-dashboard";
+import CONFIG from "../../../Config";
+import { CommentAction } from "./../CommentAction";
 export const Comment = (props) => {
   const [commentText, setCommentText] = useState("");
   const [commentEditText, setCommentEditText] = useState("");

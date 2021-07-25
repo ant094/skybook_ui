@@ -2,7 +2,7 @@ import { faEdit, faEllipsisH, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react'
 import { Card, ListGroup } from 'react-bootstrap';
-import DashboardApi from '../../api/api-dashboard';
+import DashboardApi from '../../../Api/api-dashboard';
 
 export const PostAction = (props) => {
   const [showPostAction, setShowPostAction] = useState(false);

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Switch, useHistory, useParams } from "react-router-dom";
-import "./navigasi-top.css";
-import skydu from "./../skydu.png";
+import {  useHistory, useParams } from "react-router-dom";
+import "./index.css";
+import skydu from "./../../../Assets/Image/skydu.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-import AuthApi from "../../../api/auth-login";
-import CONFIG from "../../../config/config";
+import AuthApi from "../../../Api/auth-login";
+import CONFIG from "../../../Config";
 import { ListGroup } from "react-bootstrap";
-import DashboardApi from "../../../api/api-dashboard";
+import DashboardApi from "../../../Api/api-dashboard";
 export const NavigasiTop = (props) => {
    const [user, setUser] = useState(null);
    const [showNotification, setShowNotification] = useState(false);

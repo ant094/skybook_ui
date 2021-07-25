@@ -1,4 +1,4 @@
-import CONFIG from "../config/config";
+import CONFIG from "../Config";
 const API_ENDPOINT = {
   LOGIN: CONFIG.BASE_URL_API_LOGIN,
   HOME: `${CONFIG.BASE_URL_API_HOME}/home`,

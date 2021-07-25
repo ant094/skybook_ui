@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Redirect, useParams } from 'react-router-dom';
-import AuthApi from '../../api/auth-login';
-import { Login } from './Login';
+import {  useParams } from 'react-router-dom';
+import AuthApi from '../../../Api/auth-login';
+import { Login } from '../Login';
 
 export const VerifyEmail = () => {
 
@@ -21,5 +21,12 @@ export const VerifyEmail = () => {
       // localStorage.setItem('id',id)
       // localStorage.setItem('hasEmail',hasEmail)
         
-    return <Login emailVerify = {email} id={id} hasEmail={hasEmail} handleVerifyEmail={(id, email,token)=>verifyEmail(id, email,token)}/>;
+    return (
+      <Login
+        emailVerify={email}
+        id={id}
+        hasEmail={hasEmail}
+        handleVerifyEmail={(id, email, token) => verifyEmail(id, email, token)}
+      />
+    );
 }

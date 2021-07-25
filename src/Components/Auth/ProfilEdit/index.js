@@ -1,13 +1,11 @@
 import React from "react";
-import ari from "./../ari.jpg";
-// import AuthApi from "../../../api/auth-login";
-import "./profil-edit.css";
+import "./index.css";
 import FloatingLabel from "react-bootstrap-floating-label";
 import { Form, Button, Modal} from "react-bootstrap";
-import AuthApi from "../../../api/auth-login";
+import AuthApi from "../../../Api/auth-login";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import CONFIG from "../../../config/config";
+import CONFIG from "../../../Config";
 
 // import ModalHeader from "react-bootstrap/ModalHeader";
 export const ProfilEdit = (props) => {

@@ -1,11 +1,9 @@
-import React, { Component, createContext,  useEffect } from "react";
+import React, { Component, createContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Login } from "./pages/auth/Login";
-import { Register } from "./pages/auth/Register";
-import { VerifyEmail } from "./pages/auth/VerifyEmail";
-import { EmailNotifyVerify, EmailVerify } from "./pages/dashboard/EmailNotifyVerify";
-import { Home } from "./pages/dashboard/Home";
-import { Profil } from "./pages/dashboard/Profil";
+import { Login } from "./Containers/Auth/Login";
+import { VerifyEmail } from "./Containers/Auth/VerifyEmail";
+import { Home } from "./Containers/Dashboard/Home";
+import { Profil } from "./Containers/Dashboard/Profil";
 
 
 export const ReactContext = createContext();
@@ -34,8 +32,6 @@ export default class Routes extends Component {
             <Route exact path="/" component={Login} />
             <Route exact path="/verify-email/:id/:hasEmail" component={VerifyEmail} />
             <Route exact path="/dashboard" component={Home} />
-            <Route path="/register" component={Register} />
-            <Route path="/dashboard/email" component={EmailNotifyVerify} />
             <Route path="/dashboard/profil/:id" component={Profil} />
           </Switch>
         </Provider>

@@ -5,7 +5,7 @@ class AuthApi {
     const data = {
       grant_type: "password",
       client_id: "1",
-      client_secret: "Okm8zLeKPI1FPVivzJMuacvfgdz3ATdrvN1UZtzi",
+      client_secret: "dRPH8NcadqDmnE82jHcJ9281F5ttgAkRKApHq6aw",
       // client_secret: "MaH5CwOxZbYqLGQ6210zZhr0ou1OBK24Qi6DLg9k",
       username: email,
       password: password,
@@ -71,7 +71,7 @@ class AuthApi {
       },
     });
     const responseJson = await response.json();
-    return responseJson.success;
+    return responseJson;
   }
   static async editProfil(id, fileImage, data, token) {
     const formData = new FormData();
