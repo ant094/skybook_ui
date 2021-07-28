@@ -9,6 +9,7 @@ import DashboardApi from '../../../Api/api-dashboard';
 import { Comment } from '../Comment';
 import { PostAction } from '../PostAction';
 import DOMPurify from 'dompurify';
+import { useHistory } from 'react-router-dom';
 export const Post = (props) => {
   const [likeStyle, setLikeStyle] = useState("");
   const [totalLike, setTotalLike] = useState("");
@@ -17,7 +18,10 @@ export const Post = (props) => {
   const token = props.token;
   const [showActionComment, setShowActionComment] = useState(false);
   const [updateDelete, setUpdateDelete] = useState(false);
-
+ let history = useHistory();
+ function handleClickProfile(id) {
+   history.push(`/dashboard/profil/${id}`);
+ }
   const handleLike = async (e, token) => {
     const postId = e.target.id;
     if (likeStyle === "likeStyle") {
@@ -87,12 +91,12 @@ export const Post = (props) => {
               props?.data?.user?.profil_picture?.includes("http")
                 ? props?.data?.user?.profil_picture
                 : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
-            }
+            } onClick={()=>handleClickProfile(props.data.user?.id)}
             alt="Girl in a jacket"
             className="image-post"
           />
           <div className="card-header-title-post">
-            <h1>{props.data.user?.name}</h1>
+            <h1 onClick={()=>handleClickProfile(props.data.user?.id)}>{props.data.user?.name}</h1>
             <h2>{props.data?.created_at}</h2>
           </div>
           {props.data.user?.id === props.profilData?.user_auth_id && (
