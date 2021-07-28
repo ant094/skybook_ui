@@ -69,7 +69,7 @@ export const Login = (props) => {
         }
         return (
           <>
-            <Alert show={showAlertRegister} variant="success" className="text-center">
+            <Alert show={showAlertRegister} variant="success" className="text-center register-success-alert">
               Register Success
             </Alert>
             <div className="login">
