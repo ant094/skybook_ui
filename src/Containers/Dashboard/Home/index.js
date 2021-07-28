@@ -35,16 +35,7 @@ setEditModeId(id);
           profilData={profilData}
         />
       ));
-      // console.log(data["0"])
-      // for (let index = 0; index < data.length; index++) {
-      //  return (
-      //    <Post
-      //      key={data[`${index}`].id}
-      //      token={token}
-      //      data={data[`${index}`]}
-      //    />
-      //  );
-      // }
+   
     };
 
   const MySwal = withReactContent(Swal);

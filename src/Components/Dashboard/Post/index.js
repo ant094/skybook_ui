@@ -84,16 +84,16 @@ export const Post = (props) => {
         <Card.Header className="card-header-clear-style">
           <img
             src={
-                 props?.data?.user?.profil_picture?.includes("http")
-      ? props?.data?.user?.profil_picture
-      : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
+              props?.data?.user?.profil_picture?.includes("http")
+                ? props?.data?.user?.profil_picture
+                : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
             }
             alt="Girl in a jacket"
             className="image-post"
           />
           <div className="card-header-title-post">
             <h1>{props.data.user?.name}</h1>
-            <h2>June 21, 12:14 pm</h2>
+            <h2>{props.data?.created_at}</h2>
           </div>
           {props.data.user?.id === props.profilData?.user_auth_id && (
             <PostAction
@@ -106,7 +106,7 @@ export const Post = (props) => {
             />
           )}
         </Card.Header>
-        <Card.Body className="pb-1">
+        <Card.Body className="pb-1 pt-0">
           <Card.Text>
             <div
               className="preview"
