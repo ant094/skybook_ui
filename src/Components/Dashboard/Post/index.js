@@ -12,7 +12,7 @@ import DOMPurify from 'dompurify';
 import { useHistory } from 'react-router-dom';
 export const Post = (props) => {
   const [likeStyle, setLikeStyle] = useState("");
-  const [totalLike, setTotalLike] = useState(0);
+  const [totalLike, setTotalLike] = useState(props.data.total_like);
   const [totalComment, setTotalComment] = useState("");
   const [showComment, setShowComment] = useState(false);
   const token = props.token;
@@ -54,7 +54,8 @@ export const Post = (props) => {
   }, [props.data.id]);
 
   const loadTotalLike = (likeTotal) => {
-    const like = (totalLike > 0 || likeStyle !== "likeStyle") ? totalLike : likeTotal;
+    const like =
+      totalLike > 0 || likeStyle !== "likeStyle" ? totalLike : likeTotal;
     if (like > 0) {
       return <div className="total-like-post">{like > 99 ? "99+" : like}</div>;
     } else {
