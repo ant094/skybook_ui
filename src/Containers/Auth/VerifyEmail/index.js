@@ -7,26 +7,26 @@ export const VerifyEmail = () => {
 
       const { id, hasEmail } = useParams();
       const [oneRun, setOneRun] = useState(true);
-      const [email, setEmail] = useState(false);
-      const verifyEmail = async (id, hasEmail, token) => {
+      const [emailVerify, setEmailVerify] = useState(false);
+
+      const handleVerifyEmail = async (id, hasEmail, token) => {
         const response = await AuthApi.verifyEmail(id, hasEmail, token);
         if(response.success === "Email Verify Success"){
-          setEmail(true)
+          setEmailVerify(true)
         }
       };
+      
       if(oneRun){
-          verifyEmail(id, hasEmail, localStorage.getItem('token'));
+          handleVerifyEmail(id, hasEmail, localStorage.getItem('token'));
           setOneRun(false)
         }
-      // localStorage.setItem('id',id)
-      // localStorage.setItem('hasEmail',hasEmail)
         
     return (
       <Login
-        emailVerify={email}
+        emailVerify={emailVerify}
         id={id}
         hasEmail={hasEmail}
-        handleVerifyEmail={(id, email, token) => verifyEmail(id, email, token)}
+        handleVerifyEmail={(id, email, token) => handleVerifyEmail(id, email, token)}
       />
     );
 }

@@ -6,78 +6,76 @@ import { Form, Button, Modal} from "react-bootstrap";
 import AuthApi from "../../../Api/auth-login";
 
 export const Register = (props) => {
- const [name, setName] = useState("");
- const [email, setEmail] = useState("");
- const [password, setPassword] = useState("");
- const [passwordConfirmation, setPasswordConfirmation] = useState("");
- const [RegisterMessage, setRegisterMessage] = useState("");
- const [RegisterMessageAlready, setRegisterMessageAlready] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [RegisterErrorMessage, setRegisterErrorMessage] = useState("");
+  const [RegisterErrorMessageAlready, setRegisterErrorMessageAlready] = useState("");
 
- const handleRegister = async (data) => {
-   const registerStatus = await AuthApi.register(data);
-   if (registerStatus.errors) {
-     setRegisterMessageAlready("");
-     setRegisterMessage(registerStatus.errors);
+  // Main Register Email
+  const handleRegister = async (data) => {
+    const registerStatus = await AuthApi.register(data);
+    if (registerStatus.errors) {
+      setRegisterErrorMessageAlready("");
+      setRegisterErrorMessage(registerStatus.errors);
     } else if (registerStatus.error === "user registered") {
-     setRegisterMessage("");
-     setRegisterMessageAlready(registerStatus);
-   } else {
-    handleClose()
-   }
-    
- };
-
- const handleSubmit = async (e) => {
-   e.preventDefault();
-   let data = {
-     name: name,
-     email: email,
-     password: password,
-     password_confirmation: passwordConfirmation,
-   };
-   handleRegister(data); 
-
- };
-
- 
-const handleRegisterWithProvider = async (data, provider) => {
-  const registerStatus = await AuthApi.registerWithProvider(data, provider);
-  if (registerStatus.error === "user registered") {
-  console.log(registerStatus.error)
-  setRegisterMessage("");
-  setRegisterMessageAlready(registerStatus);
-} else {
- handleClose()
-}
-};
-const responseGoogle = async (response) => {
-  const data = {
-    email: response?.profileObj?.email,
-    token: response?.accessToken,
+      setRegisterErrorMessage("");
+      setRegisterErrorMessageAlready(registerStatus);
+    } else {
+      handleCloseRegisterModal();
+    }
   };
- await handleRegisterWithProvider(data, "google");
-};
 
-const responseFacebook = (response) => {
-  console.log(response); 
-  const data = {
-    email: response?.email,
-    token: response?.accessToken,
+  // Main Register Provider Facebook & Google
+  const handleRegisterWithProvider = async (data, provider) => {
+    const registerStatus = await AuthApi.registerWithProvider(data, provider);
+    if (registerStatus.error === "user registered") {
+      console.log(registerStatus.error);
+      setRegisterErrorMessage("");
+      setRegisterErrorMessageAlready(registerStatus);
+    } else {
+      handleCloseRegisterModal();
+    }
   };
-  handleRegisterWithProvider(data, "facebook");
-};
 
+  // Register Method
+  const handleRegisterEmail = async (e) => {
+    e.preventDefault();
+    let data = {
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: passwordConfirmation,
+    };
+    handleRegister(data);
+  };
+  const handleRegisterGoogle = async (response) => {
+    const data = {
+      email: response?.profileObj?.email,
+      token: response?.accessToken,
+    };
+    await handleRegisterWithProvider(data, "google");
+  };
+  const handleRegisterFacebook = (response) => {
+    console.log(response);
+    const data = {
+      email: response?.email,
+      token: response?.accessToken,
+    };
+    handleRegisterWithProvider(data, "facebook");
+  };
 
-const handleClose = () => {
+  const handleCloseRegisterModal = () => {
     props.handleClose();
     props.hadleShowAlertRegister();
-    setRegisterMessage("");
-    setRegisterMessageAlready("");
-}
+    setRegisterErrorMessage("");
+    setRegisterErrorMessageAlready("");
+  };
 
   return (
     <>
-      <Modal show={props.show} size="sm" onHide={() => handleClose()}>
+      <Modal show={props.show} size="sm" onHide={() => handleCloseRegisterModal()}>
         <Modal.Header closeButton closeLabel={""}>
           <Modal.Title>
             <div className="registerTitle">
@@ -87,10 +85,10 @@ const handleClose = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={(e) => handleSubmit(e)}>
+          <Form onSubmit={(e) => handleRegisterEmail(e)}>
             <Form.Group className="mb-3 text-center">
               <Form.Text className=" text-danger ">
-                {RegisterMessageAlready !== "" ? "user already register" : ""}
+                {RegisterErrorMessageAlready !== "" ? "user already register" : ""}
               </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -103,8 +101,8 @@ const handleClose = () => {
               />
 
               <Form.Text className="text-danger">
-                {RegisterMessage?.name !== "undefined"
-                  ? RegisterMessage?.name
+                {RegisterErrorMessage?.name !== "undefined"
+                  ? RegisterErrorMessage?.name
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -117,8 +115,8 @@ const handleClose = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage?.email !== "undefined"
-                  ? RegisterMessage?.email
+                {RegisterErrorMessage?.email !== "undefined"
+                  ? RegisterErrorMessage?.email
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -132,8 +130,8 @@ const handleClose = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage?.password !== "undefined"
-                  ? RegisterMessage?.password
+                {RegisterErrorMessage?.password !== "undefined"
+                  ? RegisterErrorMessage?.password
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -146,8 +144,8 @@ const handleClose = () => {
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {RegisterMessage?.password_confirmation !== "undefined"
-                  ? RegisterMessage?.password_confirmation
+                {RegisterErrorMessage?.password_confirmation !== "undefined"
+                  ? RegisterErrorMessage?.password_confirmation
                   : ""}
               </Form.Text>
             </Form.Group>
@@ -160,13 +158,13 @@ const handleClose = () => {
               <GoogleLogin
                 clientId="458456914945-n6m3evan8k2ovagei6mnd4o3tpvlkfed.apps.googleusercontent.com"
                 buttonText="Daftar"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
+                onSuccess={handleRegisterGoogle}
+                onFailure={handleRegisterGoogle}
               />
               <FacebookLogin
                 appId="1120589045104588"
                 fields="name,email,picture"
-                callback={responseFacebook}
+                callback={handleRegisterFacebook}
                 cssClass="my-facebook-button-class"
                 textButton=" Daftar"
                 icon="fa-facebook"

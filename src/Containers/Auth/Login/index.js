@@ -8,57 +8,69 @@ import { Redirect } from "react-router-dom";
 import { Register } from "../../../Components/Auth/Register";
 
 export const Login = (props) => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  const [showAlertRegister, setShowAlertRegister] = useState(false);
-  const [loginMessage, setloginMessage] = useState(null);
+  const [showAlertRegisterSuccess, setShowAlertRegisterSuccess] = useState(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
   const [login, setLogin] = useState(false);
+  
   const token = localStorage.getItem('token');
 
+  // Main login method
   const handleLogin = async (email, password) => {
     const loginResponse = await AuthApi.login(email, password);
     if (loginResponse.error) {
-      setloginMessage("User not register");
-       setTimeout(() => {
-         setloginMessage("");
-       }, 5000);
-       
-      setPassword("");
+        helperLoginError()
     }
     if (loginResponse.access_token) {
-      await localStorage.setItem("token", loginResponse.access_token);
-      setLogin(true);
-      if (props?.emailVerify == false) {
-        props?.handleVerifyEmail(
-          props.id,
-          props.hasEmail,
-          loginResponse.access_token
-        );
-        console.log(props.emailVerify);
-      }
+     helperSetToken(loginResponse.access_token);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const helperLoginError = () => {
+      setLoginErrorMessage("User not register");
+      setTimeout(() => {
+        setLoginErrorMessage("");
+      }, 5000);
+
+      setPassword("");
+  }
+
+  const helperSetToken = async (token) => {
+     await localStorage.setItem("token", token);
+     setLogin(true);
+     if (props?.emailVerify == false) {
+       props?.handleVerifyEmail(
+         props.id,
+         props.hasEmail,
+         token
+       );
+     }
+   }
+
+  // Method Login
+  const handleLoginEmail = async (e) => {
     e.preventDefault();
     handleLogin(email, password);
   };
 
-  const responseGoogle = (response) => {
+  const handleLoginGoogle = (response) => {
   const email= response?.profileObj?.email;
     const password = response?.googleId;
     handleLogin(email, password);
   };
 
-  const responseFacebook = (response) => {
+  const handleLoginFacebook = (response) => {
     const email = response.email;
     const password = response.accessToken;
     handleLogin(email, password);
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // Show & Off Modal Register
+  const handleCloseModalRegister = () => setShow(false);
+  const handleShowModalRegister = () => setShow(true);
 
         return (
           <>
@@ -67,7 +79,7 @@ export const Login = (props) => {
             )}
 
             <Alert
-              show={showAlertRegister}
+              show={showAlertRegisterSuccess}
               variant="success"
               className="text-center register-success-alert"
             >
@@ -82,9 +94,9 @@ export const Login = (props) => {
                 </h2>
               </div>
               <div className="loginForm text-center">
-                <Form onSubmit={(e) => handleSubmit(e)}>
+                <Form onSubmit={(e) => handleLoginEmail(e)}>
                   <Form.Text className="text-danger ">
-                    {loginMessage !== "undefined" ? loginMessage : ""}
+                    {loginErrorMessage !== "undefined" ? loginErrorMessage : ""}
                   </Form.Text>
                   <Form.Group className="mb-3">
                     <Form.Control
@@ -117,8 +129,8 @@ export const Login = (props) => {
                     <GoogleLogin
                       clientId="458456914945-n6m3evan8k2ovagei6mnd4o3tpvlkfed.apps.googleusercontent.com"
                       buttonText="Login"
-                      onSuccess={(response) => responseGoogle(response)}
-                      onFailure={(response) => responseGoogle(response)}
+                      onSuccess={(response) => handleLoginGoogle(response)}
+                      onFailure={(response) => handleLoginGoogle(response)}
                       cookiePolicy={"single_host_origin"}
                     />
                     <FacebookLogin
@@ -127,12 +139,12 @@ export const Login = (props) => {
                       cssClass="my-facebook-button-class"
                       textButton=" Login"
                       icon="fa-facebook"
-                      callback={(response) => responseFacebook(response)}
+                      callback={(response) => handleLoginFacebook(response)}
                     />
                     <hr />
                     <Button
                       variant="primary"
-                      onClick={handleShow}
+                      onClick={handleShowModalRegister}
                       id="register"
                     >
                       Buat Akun Baru
@@ -142,11 +154,11 @@ export const Login = (props) => {
               </div>
               <Register
                 show={show}
-                handleClose={handleClose}
+                handleClose={handleCloseModalRegister}
                 hadleShowAlertRegister={() => {
-                  setShowAlertRegister(true);
+                  setShowAlertRegisterSuccess(true);
                   setTimeout(() => {
-                    setShowAlertRegister(false);
+                    setShowAlertRegisterSuccess(false);
                   }, 5000);
                 }}
               />
