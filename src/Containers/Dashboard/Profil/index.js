@@ -25,11 +25,13 @@ export const Profil = () => {
   const [postUpdate, setPostUpdate] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editModeId, setEditModeId] = useState(false);
+  const [login, setLogin] = useState(true);
+  const token = localStorage.getItem('token');
   const handlePostDelete = () => {
     setPostUpdate(postUpdate ? false : true);
   };
   const [like, setLike] = useState(0);
-  const handleLogout = async (token, handleLoginContext) => {
+  const handleLogout = async (token) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to logout!",
@@ -41,7 +43,7 @@ export const Profil = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await AuthApi.logout(token);
-        handleLoginContext(null);
+        setLogin(false);
         localStorage.clear();
       }
     });
@@ -143,21 +145,10 @@ export const Profil = () => {
       );
     }
   };
-  return (
-    <ReactContext.Consumer>
-      {(value) => {
-        const localStorageToken = value.state.token;
-
-        if (!localStorageToken) {
-          return <Redirect to="/" />;
-        }
-        if (emailVerify) {
-          {
-            /* return <Redirect to="/dashboard/email" />; */
-          }
-        }
+       
         return (
           <>
+            {(!token || !login) && <Redirect to="/" />}
             <NavigasiTop data={profilData} update={profilUpdate} />
             <div id="main">
               {profilData && (
@@ -177,14 +168,12 @@ export const Profil = () => {
                       <button onClick={handleShow}>Edit Profil</button>
                     )}
                     {profilData?.user_auth_id != id &&
-                      viewBtnFollow(follower, value.state.token)}
+                      viewBtnFollow(follower, token)}
 
                     {profilData?.user_auth_id == id && (
                       <FontAwesomeIcon
                         icon={faSignOutAlt}
-                        onClick={() =>
-                          handleLogout(value.state.token, value.handleLogin)
-                        }
+                        onClick={() => handleLogout(token)}
                         className="profil-exit"
                       />
                     )}
@@ -208,12 +197,12 @@ export const Profil = () => {
                   }
                 />
               )}
-              {profilData ? loadPosts(profilData.posts, value.state.token) : ""}
+              {profilData ? loadPosts(profilData.posts, token) : ""}
               <ProfilEdit
                 show={show}
                 handleClose={handleClose}
                 data={profilData}
-                token={value.state.token}
+                token={token}
                 update={() => setProfilUpdate(true)}
               />
               {profilData?.posts?.length === 0 && (
@@ -224,7 +213,5 @@ export const Profil = () => {
             </div>
           </>
         );
-      }}
-    </ReactContext.Consumer>
-  );
+
 };

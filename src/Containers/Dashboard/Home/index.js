@@ -9,13 +9,12 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 export const Home = () => {
    const { id } = useParams();
-   const [show, setShow] = useState(false);
    const [profilData, setProfilData] = useState(null);
   const [postUpdate, setPostUpdate] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editModeId, setEditModeId] = useState(false);
    const [emailVerify, setEmailVerify] = useState(false);
-
+  const token = localStorage.getItem("token");
 const handlePostDelete = ()=>{
   setPostUpdate(postUpdate ? false : true);
 }
@@ -63,14 +62,8 @@ setEditModeId(id);
      fetchData();
    }, [id, postUpdate]);
   return (
-    <ReactContext.Consumer>
-      {(value) => {
-       const localStorageToken = value.state.token;
-       if (!localStorageToken) {
-         return <Redirect to="/" />;
-       }
-        return (
           <>
+          {!token && <Redirect to="/" />}
             <NavigasiTop data={profilData} />
             <div id="main" className=" mt-3">
               {profilData && <PostInput
@@ -80,11 +73,8 @@ setEditModeId(id);
                 editModeId={editModeId}
                 updateInputPost={() => setPostUpdate(postUpdate ? false : true) }
               />}
-              {profilData && loadPosts(profilData, value.state.token)}
+              {profilData && loadPosts(profilData, token)}
             </div>
           </>
         );
-      }}
-    </ReactContext.Consumer>
-  );
 };
