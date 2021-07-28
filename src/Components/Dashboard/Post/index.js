@@ -12,12 +12,12 @@ import DOMPurify from 'dompurify';
 import { useHistory } from 'react-router-dom';
 export const Post = (props) => {
   const [likeStyle, setLikeStyle] = useState("");
-  const [totalLike, setTotalLike] = useState("");
+  const [totalLike, setTotalLike] = useState(0);
   const [totalComment, setTotalComment] = useState("");
   const [showComment, setShowComment] = useState(false);
   const token = props.token;
   const [showActionComment, setShowActionComment] = useState(false);
-  const [updateDelete, setUpdateDelete] = useState(false);
+  const [refresh, setRefresh] = useState(false);
  let history = useHistory();
  function handleClickProfile(id) {
    history.push(`/dashboard/profil/${id}`);
@@ -28,8 +28,8 @@ export const Post = (props) => {
       const unlike = await DashboardApi.unlike(postId, token);
       if (unlike === "unliked post success") {
         const total_like = await DashboardApi.totalLike(postId, token);
-        setLikeStyle("");
         console.log(total_like);
+        setLikeStyle("");
         setTotalLike(total_like);
       }
     } else {
@@ -52,11 +52,10 @@ export const Post = (props) => {
 
   useEffect(() => {
     isLike();
-  }, [props.data.id, updateDelete]);
+  }, [props.data.id, refresh]);
 
   const loadTotalLike = (likeTotal) => {
     let like = totalLike > 0 ? totalLike : likeTotal;
-
     if (like > 0) {
       return <div className="total-like-post">{like > 99 ? "99+" : like}</div>;
     } else {

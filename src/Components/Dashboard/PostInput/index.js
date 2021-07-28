@@ -9,7 +9,9 @@ import { useDropzone } from "react-dropzone";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import DashboardApi from "../../../Api/api-dashboard";
 import CONFIG from "../../../Config";
+
 export const PostInput = (props) => {
+
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
   const [show, setShow] = useState(false);
   const [fileInput, setFileInput] = useState("");
@@ -29,7 +31,7 @@ export const PostInput = (props) => {
     />
   ));
   const filesEdit = () => {
-    if (acceptedFiles.length === 0) {
+    if (fileInput === "") {
       return (
         <img
           src={`${CONFIG.BASE_URL_API_IMAGE}/${imageEdit}`}
@@ -63,6 +65,7 @@ export const PostInput = (props) => {
   const handleClose = () => {
     setShow(false);
     setToolbarHidden(true);
+    setModeEdit(true)
     setFileInput("");
     setPostErrorMessage("");
     props.closeEditMode();
@@ -92,6 +95,7 @@ export const PostInput = (props) => {
     if (responseInputPost.success === "Post upload success") {
       props.updateInputPost();
       handleClose();
+      handleClose();
     }
     setPostErrorMessage(responseInputPost.errors);
   };
@@ -104,6 +108,7 @@ export const PostInput = (props) => {
     );
     if (responseEditPost === "update post success") {
       props.updateInputPost();
+      handleClose();
       handleClose();
     }
   };
@@ -171,8 +176,8 @@ export const PostInput = (props) => {
               <p className="text-danger">{postErrorMessage?.image}</p>
             )}
             <aside>
-              {fileInput !== "" && <h4>Image Upload</h4>}
-              {fileInput !== "" && files}
+              {(fileInput !== "" && modeEdit) &&  <h4>Image Upload</h4>}
+              {(fileInput !== "" && modeEdit) &&  files}
               {props.editMode && <h4>Image Upload</h4>}
               {props.editMode && filesEdit()}
             </aside>
