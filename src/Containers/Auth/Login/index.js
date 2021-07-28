@@ -5,7 +5,6 @@ import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
-import { ReactContext } from "../../../routes";
 import { Register } from "../../../Components/Auth/Register";
 
 export const Login = (props) => {

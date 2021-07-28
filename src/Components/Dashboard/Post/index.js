@@ -17,7 +17,6 @@ export const Post = (props) => {
   const [showComment, setShowComment] = useState(false);
   const token = props.token;
   const [showActionComment, setShowActionComment] = useState(false);
-  const [refresh, setRefresh] = useState(false);
  let history = useHistory();
  function handleClickProfile(id) {
    history.push(`/dashboard/profil/${id}`);
@@ -52,10 +51,10 @@ export const Post = (props) => {
 
   useEffect(() => {
     isLike();
-  }, [props.data.id, refresh]);
+  }, [props.data.id]);
 
   const loadTotalLike = (likeTotal) => {
-    let like = totalLike > 0 ? totalLike : likeTotal;
+    const like = (totalLike > 0 || likeStyle !== "likeStyle") ? totalLike : likeTotal;
     if (like > 0) {
       return <div className="total-like-post">{like > 99 ? "99+" : like}</div>;
     } else {
