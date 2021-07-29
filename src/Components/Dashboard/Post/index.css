@@ -18,10 +18,13 @@ div.card-footer-clear-style {
 
 .card-header-title-post {
     display: inline-block;
+    vertical-align: bottom;
+    margin-left: 4px;
 }
 
 .card-header-title-post h1 {
     font-size: 18px;
+    margin-bottom: 4px;
 }
 
 .card-header-title-post h2 {

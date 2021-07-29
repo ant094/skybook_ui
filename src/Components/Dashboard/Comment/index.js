@@ -116,9 +116,10 @@ export const Comment = (props) => {
                   }
                   alt="Girl in a jacket"
                   className="comment-img"
+                   onClick={() => props.handleClickProfile(data?.id)}
                 />
                 <Card className="card-load-comment">
-                  <h1>{data?.name}</h1>
+                  <h1 onClick={() => props.handleClickProfile(data?.id)}>{data?.name}</h1>
                   <p>{data?.pivot?.comment}</p>
                 </Card>
                 <CommentAction

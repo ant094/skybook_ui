@@ -166,6 +166,7 @@ export const Post = (props) => {
 
         {showComment && (
           <Comment
+            handleClickProfile = {(id) => handleClickProfile(id)}
             profilData={props.profilData}
             data={props.data}
             setComment={(comment) => setTotalComment(comment)}
