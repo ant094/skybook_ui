@@ -10,40 +10,51 @@ import { Comment } from '../Comment';
 import { PostAction } from '../PostAction';
 import DOMPurify from 'dompurify';
 import { useHistory } from 'react-router-dom';
+
 export const Post = (props) => {
+
   const [likeStyle, setLikeStyle] = useState("");
   const [totalLike, setTotalLike] = useState(props.data.total_like);
   const [totalComment, setTotalComment] = useState("");
   const [showComment, setShowComment] = useState(false);
   const token = props.token;
   const [showActionComment, setShowActionComment] = useState(false);
- let history = useHistory();
+  const history = useHistory();
+
  function handleClickProfile(id) {
    history.push(`/dashboard/profil/${id}`);
  }
-  const handleLike = async (e, token) => {
+
+ // Main Like  & Unlike
+  const handleLikeAndUnlike = async (e, token) => {
     const postId = e.target.id;
     if (likeStyle === "likeStyle") {
-      const unlike = await DashboardApi.unlike(postId, token);
-      if (unlike === "unliked post success") {
-        const total_like = await DashboardApi.totalLike(postId, token);
-        console.log(total_like);
-        setLikeStyle("");
-        setTotalLike(total_like);
-      }
+      helperUnlike(postId, token);
     } else {
-      const like = await DashboardApi.like(postId, token);
-      if (like === "like post success") {
-        setLikeStyle("likeStyle");
-        const total_like = await DashboardApi.totalLike(postId, token);
-        setTotalLike(total_like);
-      }
+      helperLike(postId, token);
     }
   };
 
+  const helperUnlike = async (postId, token) => {
+    const unlike = await DashboardApi.unlike(postId, token);
+    if (unlike === "unliked post success") {
+      const total_like = await DashboardApi.totalLike(postId, token);
+      console.log(total_like);
+      setLikeStyle("");
+      setTotalLike(total_like);
+    }
+  }
+  const helperLike = async (postId, token) => {
+    const like = await DashboardApi.like(postId, token);
+    if (like === "like post success") {
+      setLikeStyle("likeStyle");
+      const total_like = await DashboardApi.totalLike(postId, token);
+      setTotalLike(total_like);
+    }
+  }
+
   const isLike = () => {
     const post_id = props?.profilData?.like_posts_id;
-
     if (post_id?.includes(props.data.id)) {
       setLikeStyle("likeStyle");
     }
@@ -90,22 +101,22 @@ export const Post = (props) => {
               props?.data?.user?.profil_picture?.includes("http")
                 ? props?.data?.user?.profil_picture
                 : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
-            } onClick={()=>handleClickProfile(props.data.user?.id)}
+            }
+            onClick={() => handleClickProfile(props.data.user?.id)}
             alt="Girl in a jacket"
             className="image-post"
           />
           <div className="card-header-title-post">
-            <h1 onClick={()=>handleClickProfile(props.data.user?.id)}>{props.data.user?.name}</h1>
+            <h1 onClick={() => handleClickProfile(props.data.user?.id)}>
+              {props.data.user?.name}
+            </h1>
             <h2>{props.data?.created_at}</h2>
           </div>
           {props.data.user?.id === props.profilData?.user_auth_id && (
             <PostAction
-              // setComment={(totalComment) => props.setComment(totalComment)}
               deletePost={() => props.delete()}
               editMode={(id) => props.editMode(id)}
               data={props.data}
-              // dataProps={props.data}
-              // updateComment={() => setUpdateComment(updateComment ? false : true)}
             />
           )}
         </Card.Header>
@@ -119,13 +130,13 @@ export const Post = (props) => {
           <Card.Img
             src={`${CONFIG.BASE_URL_API_IMAGE}/${props.data.image}`}
             alt="Card image image-post"
-            // height="200"
+            height="300"
           />
         </Card.Body>
         <Card.Footer className="card-footer-clear-style">
           <div className="card-footer-action-icon">
             <FontAwesomeIcon
-              onClick={(e) => handleLike(e, token)}
+              onClick={(e) => handleLikeAndUnlike(e, token)}
               id={props.data.id}
               icon={faThumbsUp}
               className={`footer-action-icon ${likeStyle}`}
@@ -154,7 +165,6 @@ export const Post = (props) => {
             actionComment={showActionComment}
           />
         )}
-        {/* {showComment && loadComment(props.data)} */}
       </Card>
     </div>
   );

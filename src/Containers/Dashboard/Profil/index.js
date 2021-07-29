@@ -16,6 +16,7 @@ import withReactContent from "sweetalert2-react-content";
 import CONFIG from "../../../Config";
 
 export const Profil = () => {
+  
   const { id } = useParams();
   const [show, setShow] = useState(false);
   const [profilData, setProfilData] = useState(null);
@@ -26,11 +27,13 @@ export const Profil = () => {
   const [editMode, setEditMode] = useState(false);
   const [editModeId, setEditModeId] = useState(false);
   const [login, setLogin] = useState(true);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+  const [like, setLike] = useState(0);
+
   const handlePostDelete = () => {
     setPostUpdate(postUpdate ? false : true);
   };
-  const [like, setLike] = useState(0);
+
   const handleLogout = async (token) => {
     Swal.fire({
       title: "Are you sure?",
@@ -48,6 +51,7 @@ export const Profil = () => {
       }
     });
   };
+
   const getProfilData = async (id, token) =>
     await DashboardApi.getDataProfilById(id, token);
   const isFollower = async (user_follower_id, token) => {
@@ -69,6 +73,8 @@ export const Profil = () => {
     fetchData();
     setProfilUpdate(false);
   }, [id, like, profilUpdate, postUpdate, follower]);
+
+  // Follow And Unfollow
   const handleFollow = async (e, token) => {
     const userFollowerId = e.target.value;
     const followCheck = await DashboardApi.postFollow(userFollowerId, token);
@@ -86,13 +92,14 @@ export const Profil = () => {
       setFollower(false);
     }
   };
+
   const handleEditMode = (id) => {
     setEditMode(true);
     setEditModeId(id);
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const toggleModalEditProfil = () => setShow(show ? false : true);
+
   const loadPosts = (data, token) => {
     return data?.map((data) => (
       <Post
@@ -145,73 +152,69 @@ export const Profil = () => {
       );
     }
   };
-       
-        return (
-          <>
-            {(!token || !login) && <Redirect to="/" />}
-            <NavigasiTop data={profilData} update={profilUpdate} />
-            <div id="main">
-              {profilData && (
-                <Card.Body className="profile">
-                  <img
-                    src={
-                      profilData?.profil_picture?.includes("http")
-                        ? profilData?.profil_picture
-                        : `${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`
-                    }
-                    alt="Girl in a jacket"
-                    className="profil-image"
-                  />
-                  <div className="profil-text">
-                    <h1>{profilData?.name ?? ""}</h1>
-                    {profilData?.user_auth_id == id && (
-                      <button onClick={handleShow}>Edit Profil</button>
-                    )}
-                    {profilData?.user_auth_id != id &&
-                      viewBtnFollow(follower, token)}
 
-                    {profilData?.user_auth_id == id && (
-                      <FontAwesomeIcon
-                        icon={faSignOutAlt}
-                        onClick={() => handleLogout(token)}
-                        className="profil-exit"
-                      />
-                    )}
-                    <div className="profil-follower">
-                      <span>{profilData?.total_posts ?? ""} Posts</span>
-                      <span>{profilData?.total_followers ?? ""} Followers</span>
-                      <span>{profilData?.total_following ?? ""} Following</span>
-                    </div>
-                    <p>{profilData?.deskripsi ?? ""}</p>
-                  </div>
-                </Card.Body>
-              )}
+  return (
+    <>
+      {(!token || !login) && <Redirect to="/" />}
+      <NavigasiTop data={profilData} update={profilUpdate} />
+      <div id="main">
+        {profilData && (
+          <Card.Body className="profile">
+            <img
+              src={
+                profilData?.profil_picture?.includes("http")
+                  ? profilData?.profil_picture
+                  : `${CONFIG.BASE_URL_API_IMAGE}/${profilData?.profil_picture}`
+              }
+              alt="Girl in a jacket"
+              className="profil-image"
+            />
+            <div className="profil-text">
+              <h1>{profilData?.name ?? ""}</h1>
               {profilData?.user_auth_id == id && (
-                <PostInput
-                  data={profilData}
-                  editMode={editMode}
-                  closeEditMode={() => setEditMode(false)}
-                  editModeId={editModeId}
-                  updateInputPost={() =>
-                    setPostUpdate(postUpdate ? false : true)
-                  }
+                <button onClick={toggleModalEditProfil}>Edit Profil</button>
+              )}
+              {profilData?.user_auth_id != id && viewBtnFollow(follower, token)}
+
+              {profilData?.user_auth_id == id && (
+                <FontAwesomeIcon
+                  icon={faSignOutAlt}
+                  onClick={() => handleLogout(token)}
+                  className="profil-exit"
                 />
               )}
-              {profilData ? loadPosts(profilData.posts, token) : ""}
-              <ProfilEdit
-                show={show}
-                handleClose={handleClose}
-                data={profilData}
-                token={token}
-                update={() => setProfilUpdate(true)}
-              />
-              {profilData?.posts?.length === 0 && (
-                <Card body className="post-empty">
-                  belum ada post yang di buat
-                </Card>
-              )}
+              <div className="profil-follower">
+                <span>{profilData?.total_posts ?? ""} Posts</span>
+                <span>{profilData?.total_followers ?? ""} Followers</span>
+                <span>{profilData?.total_following ?? ""} Following</span>
+              </div>
+              <p>{profilData?.deskripsi ?? ""}</p>
             </div>
-          </>
-        );
-
+          </Card.Body>
+        )}
+        {profilData?.user_auth_id == id && (
+          <PostInput
+            data={profilData}
+            editMode={editMode}
+            closeEditMode={() => setEditMode(false)}
+            editModeId={editModeId}
+            updateInputPost={() => setPostUpdate(postUpdate ? false : true)}
+          />
+        )}
+        {profilData ? loadPosts(profilData.posts, token) : ""}
+        <ProfilEdit
+          show={show}
+          handleClose={toggleModalEditProfil}
+          data={profilData}
+          token={token}
+          update={() => setProfilUpdate(true)}
+        />
+        {profilData?.posts?.length === 0 && (
+          <Card body className="post-empty">
+            belum ada post yang di buat
+          </Card>
+        )}
+      </div>
+    </>
+  );
 };

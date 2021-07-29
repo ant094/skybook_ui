@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import "./index.css";
 import skydu from "./../../../Assets/Image/skydu.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,44 +8,64 @@ import AuthApi from "../../../Api/auth-login";
 import CONFIG from "../../../Config";
 import { ListGroup } from "react-bootstrap";
 import DashboardApi from "../../../Api/api-dashboard";
+
 export const NavigasiTop = (props) => {
-   const [user, setUser] = useState(null);
-   const [showNotification, setShowNotification] = useState(false);
-   const [dataNotification, setDataNotification] = useState(false);
-   const [totalNotification, setTotalNotification] = useState(true);
-     const { id } = useParams();
-   let history = useHistory();
-   function handleClickProfile() {
-     history.push(`/dashboard/profil/${user?.id}`);
-   }
-   function handleClickDashboard() {
-     history.push("/dashboard");
-   }
-   
-    const getUserData = async () => {
-      const user = await AuthApi.user(localStorage.getItem("token"));
-      setUser(user);
-    };
-    if (props.update) {
-      getUserData();
-    }
 
+  const [user, setUser] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [dataNotification, setDataNotification] = useState(false);
+  const [totalNotification, setTotalNotification] = useState(true);
 
-                            
-    console.log(!showNotification === !totalNotification);
-    console.log(props?.data?.total_notification);
-    const handleNotification = async () =>{
-      const notification = await DashboardApi.getNotification();
-      setDataNotification(notification);
-      setShowNotification(showNotification ? false : true);
-      setTotalNotification(false);
-    }
-      useEffect(() => {
-        getUserData();
-       setShowNotification(false);
-      }, [id]);
+  const { id } = useParams();
+  let history = useHistory();
 
-      console.log(user)
+  function handleClickProfile() {
+    history.push(`/dashboard/profil/${user?.id}`);
+  }
+  function handleClickDashboard() {
+    history.push("/dashboard");
+  }
+
+  const getUserData = async () => {
+    const user = await AuthApi.user(localStorage.getItem("token"));
+    setUser(user);
+  };
+
+  if (props.update) {
+    getUserData();
+  }
+
+  const handleNotification = async () => {
+    const notification = await DashboardApi.getNotification();
+    setDataNotification(notification);
+    setShowNotification(showNotification ? false : true);
+    setTotalNotification(false);
+  };
+
+  const helperNotification = (notificationAction) => {
+    let status  = '';
+     switch (notificationAction) {
+       case "like":
+         status = `${notificationAction} your post`;
+         break;
+       case "comment":
+         status = `${notificationAction} on your post`;
+         break;
+       case "follow":
+         status = `${notificationAction} you`;
+         break;
+       default:
+         status = `not found`;
+         break;
+     }
+     return status;
+  }
+
+  useEffect(() => {
+    getUserData();
+    setShowNotification(false);
+  }, [id]);
+
   return (
     <>
       <div className="navigasi-top">
@@ -66,7 +86,6 @@ export const NavigasiTop = (props) => {
               }}
               className="navbar-notify"
             />
-            {/* {props?.data?.total_notification > 0 && ( */}
             {totalNotification && props.data?.total_notification > 0 && (
               <div className="total-notification">
                 {props.data?.total_notification}
@@ -75,18 +94,7 @@ export const NavigasiTop = (props) => {
             {showNotification && (
               <ListGroup className="notification-result">
                 {dataNotification?.map((notification) => {
-                  let status = "";
-                  switch (notification?.action) {
-                    case "like":
-                      status = `${notification?.action} your post`;
-                      break;
-                    case "comment":
-                      status = `${notification?.action} on your post`;
-                      break;
-                    case "follow":
-                      status = `${notification?.action} you`;
-                      break;
-                  }
+                  const status = helperNotification(notification?.action);
                   return (
                     <ListGroup.Item>
                       <img
@@ -113,9 +121,9 @@ export const NavigasiTop = (props) => {
             )}
             <img
               src={
-                  user?.profil_picture?.includes("http")
-      ? user?.profil_picture
-      : `${CONFIG.BASE_URL_API_IMAGE}/${user?.profil_picture}`
+                user?.profil_picture?.includes("http")
+                  ? user?.profil_picture
+                  : `${CONFIG.BASE_URL_API_IMAGE}/${user?.profil_picture}`
               }
               alt="Girl in a jacket"
               className="image-profil"
