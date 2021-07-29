@@ -186,7 +186,7 @@ export const Comment = (props) => {
       );
     });
   };
-
+  
   return (
     <div>
       {viewComment(comment)}
@@ -194,9 +194,9 @@ export const Comment = (props) => {
         <div className="comment">
           <img
             src={
-              props.data?.user?.profil_picture?.includes("http")
-                ? props.data?.user?.profil_picture
-                : `${CONFIG.BASE_URL_API_IMAGE}/${props.data?.user?.profil_picture}`
+              props.profilData?.profil_picture?.includes("http")
+                ? props.profilData?.profil_picture
+                : `${CONFIG.BASE_URL_API_IMAGE}/${props.profilData?.profil_picture}`
             }
             alt="Girl in a jacket"
             className="comment-img"

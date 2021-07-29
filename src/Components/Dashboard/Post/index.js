@@ -38,19 +38,21 @@ export const Post = (props) => {
   const helperUnlike = async (postId, token) => {
     const unlike = await DashboardApi.unlike(postId, token);
     if (unlike === "unliked post success") {
-      const total_like = await DashboardApi.totalLike(postId, token);
-      console.log(total_like);
       setLikeStyle("");
-      setTotalLike(total_like);
+      helperTotalLike(postId, token);
     }
   }
   const helperLike = async (postId, token) => {
     const like = await DashboardApi.like(postId, token);
     if (like === "like post success") {
       setLikeStyle("likeStyle");
+      helperTotalLike(postId, token);
+    }
+  }
+
+  const helperTotalLike = async (postId, token) =>{
       const total_like = await DashboardApi.totalLike(postId, token);
       setTotalLike(total_like);
-    }
   }
 
   const isLike = () => {
@@ -59,6 +61,12 @@ export const Post = (props) => {
       setLikeStyle("likeStyle");
     }
   };
+
+  const handleComment = async (postId, token) => {
+    setShowComment(showComment ? false : true)
+    const totalComment = await DashboardApi.totalComment(postId, token);
+    setTotalComment(totalComment)
+  }
 
   useEffect(() => {
     isLike();
@@ -128,8 +136,9 @@ export const Post = (props) => {
             ></div>
           </Card.Text>
           <Card.Img
+            className="post-main-image"
             src={`${CONFIG.BASE_URL_API_IMAGE}/${props.data.image}`}
-            alt="Card image image-post"
+            alt="Card image "
             height="300"
           />
         </Card.Body>
@@ -145,7 +154,7 @@ export const Post = (props) => {
             {loadTotalLike(props.data.total_like)}
 
             <FontAwesomeIcon
-              onClick={() => setShowComment(showComment ? false : true)}
+              onClick={() => handleComment(props.data.id, token)}
               id={props.data.id}
               icon={faCommentAlt}
               className="footer-action-icon"
@@ -157,6 +166,7 @@ export const Post = (props) => {
 
         {showComment && (
           <Comment
+            profilData={props.profilData}
             data={props.data}
             setComment={(comment) => setTotalComment(comment)}
             setActionComment={() =>
