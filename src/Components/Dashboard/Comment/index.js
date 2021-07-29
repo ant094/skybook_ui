@@ -126,7 +126,6 @@ export const Comment = (props) => {
                   setEditComment={setEditComment.bind(setEditComment)}
                   editComment={editComment}
                   data={data}
-                  dataProps={props.data}
                   updateComment={() =>
                     setUpdateComment(updateComment ? false : true)
                   }

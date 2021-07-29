@@ -40,6 +40,8 @@ export const Login = (props) => {
 
   const helperSetToken = async (token) => {
      await localStorage.setItem("token", token);
+     const user = await AuthApi.user(token);
+     await localStorage.setItem("id", user?.id);
      setLogin(true);
      if (props?.emailVerify == false) {
        props?.handleVerifyEmail(

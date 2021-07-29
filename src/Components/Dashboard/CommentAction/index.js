@@ -38,7 +38,7 @@ export const CommentAction = (props) => {
 
   return (
     <>
-      {props.dataProps?.user?.id === props.data?.id && (
+      {localStorage.getItem('id') == props.data?.id && (
         <FontAwesomeIcon
           icon={faEllipsisH}
           className="comment-setting"

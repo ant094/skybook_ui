@@ -99,7 +99,7 @@ class AuthApi {
       },
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson.success;
   }
 }
 export default AuthApi;
