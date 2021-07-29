@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.css";
 import FloatingLabel from "react-bootstrap-floating-label";
-import { Form, Button, Modal} from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import AuthApi from "../../../Api/auth-login";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -14,45 +14,42 @@ export const ProfilEdit = (props) => {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [deskripsi, setDeskripsi] = useState(null);
-  const [profilMessage, setProfilMessage] = useState("");
+  const [profilErrorMessage, setProfilErrorMessage] = useState("");
   const [imageUploadReview, setImageUploadReview] = useState(null);
+  const hiddenFileInput = React.useRef(null);
 
-
-
-  const handleSubmit = async (e, userId, token) => {
+  // Main
+  const handleEditProfil = async (e, userId, token) => {
     e.preventDefault();
     const data = {
       name: name ?? props.data?.name,
       email: email ?? props.data?.email,
       deskripsi: deskripsi,
     };
-   const imageFile = fileInput ?? props.data.profil_picture 
+    const imageFile = fileInput ?? props.data.profil_picture;
+    
     const response = await AuthApi.editProfil(userId, imageFile, data, token);
     if (response?.success === "Updated user success") {
-        props.handleClose();
-        props.update();
+      props.handleClose();
+      props.update();
     }
-     if (response?.errors) {
-       setProfilMessage(response?.errors);
-     }
-     console.log(response);
-     console.log(response.errors);
+    if (response?.errors) {
+      setProfilErrorMessage(response?.errors);
+    }
   };
 
-  const hiddenFileInput = React.useRef(null);
-
-  const handleClick = (event) => {
+  const handleClickImage = (event) => {
     hiddenFileInput.current.click();
   };
-  const handleChange = (event) => {
+  const handleChangeImage = (event) => {
     const file = event.target.files[0];
     setFileInput(file);
     setImageUploadReview(URL.createObjectURL(file));
-
   };
-const image = props?.data?.profil_picture.includes("http")
-                  ? props?.data?.profil_picture
-                  : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.profil_picture}`;
+  const image = props?.data?.profil_picture.includes("http")
+    ? props?.data?.profil_picture
+    : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.profil_picture}`;
+
   return (
     <>
       <Modal
@@ -60,7 +57,7 @@ const image = props?.data?.profil_picture.includes("http")
         size="sm"
         onHide={() => {
           props.handleClose();
-          setProfilMessage("");
+          setProfilErrorMessage("");
           setImageUploadReview(null);
         }}
       >
@@ -70,17 +67,14 @@ const image = props?.data?.profil_picture.includes("http")
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={(e) => handleSubmit(e, id, props.token)}>
+          <Form onSubmit={(e) => handleEditProfil(e, id, props.token)}>
             <img
-              src={
-                imageUploadReview ??
-                image
-              }
+              src={imageUploadReview ?? image}
               alt="Girl in a jacket"
               className="image-profile-edit mb-3"
             />
             <Button
-              onClick={handleClick}
+              onClick={handleClickImage}
               className="btn-warning profil-edit-button"
             >
               Ubah Foto Profil
@@ -88,14 +82,11 @@ const image = props?.data?.profil_picture.includes("http")
             <input
               type="file"
               ref={hiddenFileInput}
-              onChange={handleChange}
+              onChange={handleChangeImage}
               style={{ display: "none" }}
             />
-            {/* <input type="file" name="" id=""/> */}
             <Form.Group className="mb-3">
-              <Form.Text className="text-danger">
-                {/* disini validasi Image */}
-              </Form.Text>
+              <Form.Text className="text-danger"></Form.Text>
               <Form.Control
                 type="text"
                 value={name ?? props.data?.name}
@@ -104,7 +95,7 @@ const image = props?.data?.profil_picture.includes("http")
                 onChange={(e) => setName(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {profilMessage?.name !== "undefined" ? profilMessage?.name : ""}
+                {profilErrorMessage?.name !== "undefined" ? profilErrorMessage?.name : ""}
               </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -116,8 +107,8 @@ const image = props?.data?.profil_picture.includes("http")
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Form.Text className="text-danger">
-                {profilMessage?.email !== "undefined"
-                  ? profilMessage?.email
+                {profilErrorMessage?.email !== "undefined"
+                  ? profilErrorMessage?.email
                   : ""}
               </Form.Text>
             </Form.Group>

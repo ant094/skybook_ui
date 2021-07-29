@@ -9,50 +9,72 @@ import DashboardApi from '../../../Api/api-dashboard';
 import { Comment } from '../Comment';
 import { PostAction } from '../PostAction';
 import DOMPurify from 'dompurify';
+import { useHistory } from 'react-router-dom';
+
 export const Post = (props) => {
+
   const [likeStyle, setLikeStyle] = useState("");
-  const [totalLike, setTotalLike] = useState("");
+  const [totalLike, setTotalLike] = useState(props.data.total_like);
   const [totalComment, setTotalComment] = useState("");
   const [showComment, setShowComment] = useState(false);
   const token = props.token;
   const [showActionComment, setShowActionComment] = useState(false);
-  const [updateDelete, setUpdateDelete] = useState(false);
+  const history = useHistory();
 
-  const handleLike = async (e, token) => {
+ function handleClickProfile(id) {
+   history.push(`/dashboard/profil/${id}`);
+ }
+
+ // Main Like  & Unlike
+  const handleLikeAndUnlike = async (e, token) => {
     const postId = e.target.id;
     if (likeStyle === "likeStyle") {
-      const unlike = await DashboardApi.unlike(postId, token);
-      if (unlike === "unliked post success") {
-        const total_like = await DashboardApi.totalLike(postId, token);
-        setLikeStyle("");
-        console.log(total_like);
-        setTotalLike(total_like);
-      }
+      helperUnlike(postId, token);
     } else {
-      const like = await DashboardApi.like(postId, token);
-      if (like === "like post success") {
-        setLikeStyle("likeStyle");
-        const total_like = await DashboardApi.totalLike(postId, token);
-        setTotalLike(total_like);
-      }
+      helperLike(postId, token);
     }
   };
 
+  const helperUnlike = async (postId, token) => {
+    const unlike = await DashboardApi.unlike(postId, token);
+    if (unlike === "unliked post success") {
+      setLikeStyle("");
+      helperTotalLike(postId, token);
+    }
+  }
+  const helperLike = async (postId, token) => {
+    const like = await DashboardApi.like(postId, token);
+    if (like === "like post success") {
+      setLikeStyle("likeStyle");
+      helperTotalLike(postId, token);
+    }
+  }
+
+  const helperTotalLike = async (postId, token) =>{
+      const total_like = await DashboardApi.totalLike(postId, token);
+      setTotalLike(total_like);
+  }
+
   const isLike = () => {
     const post_id = props?.profilData?.like_posts_id;
-
     if (post_id?.includes(props.data.id)) {
       setLikeStyle("likeStyle");
     }
   };
 
+  const handleComment = async (postId, token) => {
+    setShowComment(showComment ? false : true)
+    const totalComment = await DashboardApi.totalComment(postId, token);
+    setTotalComment(totalComment)
+  }
+
   useEffect(() => {
     isLike();
-  }, [props.data.id, updateDelete]);
+  }, [props.data.id]);
 
   const loadTotalLike = (likeTotal) => {
-    let like = totalLike > 0 ? totalLike : likeTotal;
-
+    const like =
+      totalLike > 0 || likeStyle !== "likeStyle" ? totalLike : likeTotal;
     if (like > 0) {
       return <div className="total-like-post">{like > 99 ? "99+" : like}</div>;
     } else {
@@ -84,29 +106,29 @@ export const Post = (props) => {
         <Card.Header className="card-header-clear-style">
           <img
             src={
-                 props?.data?.user?.profil_picture?.includes("http")
-      ? props?.data?.user?.profil_picture
-      : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
+              props?.data?.user?.profil_picture?.includes("http")
+                ? props?.data?.user?.profil_picture
+                : `${CONFIG.BASE_URL_API_IMAGE}/${props?.data?.user?.profil_picture}`
             }
+            onClick={() => handleClickProfile(props.data.user?.id)}
             alt="Girl in a jacket"
             className="image-post"
           />
           <div className="card-header-title-post">
-            <h1>{props.data.user?.name}</h1>
-            <h2>June 21, 12:14 pm</h2>
+            <h1 onClick={() => handleClickProfile(props.data.user?.id)}>
+              {props.data.user?.name}
+            </h1>
+            <h2>{props.data?.created_at}</h2>
           </div>
           {props.data.user?.id === props.profilData?.user_auth_id && (
             <PostAction
-              // setComment={(totalComment) => props.setComment(totalComment)}
               deletePost={() => props.delete()}
               editMode={(id) => props.editMode(id)}
               data={props.data}
-              // dataProps={props.data}
-              // updateComment={() => setUpdateComment(updateComment ? false : true)}
             />
           )}
         </Card.Header>
-        <Card.Body className="pb-1">
+        <Card.Body className="pb-1 pt-0">
           <Card.Text>
             <div
               className="preview"
@@ -114,15 +136,16 @@ export const Post = (props) => {
             ></div>
           </Card.Text>
           <Card.Img
+            className="post-main-image"
             src={`${CONFIG.BASE_URL_API_IMAGE}/${props.data.image}`}
-            alt="Card image image-post"
-            // height="200"
+            alt="Card image "
+            height="300"
           />
         </Card.Body>
         <Card.Footer className="card-footer-clear-style">
           <div className="card-footer-action-icon">
             <FontAwesomeIcon
-              onClick={(e) => handleLike(e, token)}
+              onClick={(e) => handleLikeAndUnlike(e, token)}
               id={props.data.id}
               icon={faThumbsUp}
               className={`footer-action-icon ${likeStyle}`}
@@ -131,7 +154,7 @@ export const Post = (props) => {
             {loadTotalLike(props.data.total_like)}
 
             <FontAwesomeIcon
-              onClick={() => setShowComment(showComment ? false : true)}
+              onClick={() => handleComment(props.data.id, token)}
               id={props.data.id}
               icon={faCommentAlt}
               className="footer-action-icon"
@@ -143,6 +166,8 @@ export const Post = (props) => {
 
         {showComment && (
           <Comment
+            handleClickProfile = {(id) => handleClickProfile(id)}
+            profilData={props.profilData}
             data={props.data}
             setComment={(comment) => setTotalComment(comment)}
             setActionComment={() =>
@@ -151,7 +176,6 @@ export const Post = (props) => {
             actionComment={showActionComment}
           />
         )}
-        {/* {showComment && loadComment(props.data)} */}
       </Card>
     </div>
   );

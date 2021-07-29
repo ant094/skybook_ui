@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSmile,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { Card, Form } from "react-bootstrap";
 import Picker from "emoji-picker-react";
 import DashboardApi from "../../../Api/api-dashboard";
@@ -17,11 +15,11 @@ export const Comment = (props) => {
   const [selectEmojiEdit, setSelectEmojiEdit] = useState(false);
   const [updateComment, setUpdateComment] = useState(false);
   const [editComment, setEditComment] = useState(0);
-;
   const [emojiClickStyle, setEmojiClickStyle] = useState({
     verticalAlign: "middle",
   });
-  const handleEnter = async (e) => {
+
+  const handleEnterComment = async (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const postId = e.target.id;
@@ -41,19 +39,6 @@ export const Comment = (props) => {
       }
     }
   };
-  const handleEditEnter = async (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const commentId   = e.target.id;
-      const commentPost = await DashboardApi.editComment(
-        commentId, 
-        commentEditText
-      );
-      if(commentPost === "Update post comment success"){
-        setEditComment(0);
-      }
-    }
-  };
   const handleComment = (event) => {
     setCommentText(event.target.value);
     let c =
@@ -66,6 +51,24 @@ export const Comment = (props) => {
         ? { verticalAlign: "bottom", marginBottom: "8px" }
         : { verticalAlign: "middle" }
     );
+  };
+  const onEmojiClick = (event, emojiObject) => {
+    setSelectEmoji(false);
+    setCommentText(commentText + emojiObject.emoji);
+  };
+
+  const handleEnterEditComment = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const commentId = e.target.id;
+      const commentPost = await DashboardApi.editComment(
+        commentId,
+        commentEditText
+      );
+      if (commentPost === "Update post comment success") {
+        setEditComment(0);
+      }
+    }
   };
   const handleEditComment = (event) => {
     setCommentEditText(event.target.value);
@@ -80,14 +83,11 @@ export const Comment = (props) => {
         : { verticalAlign: "middle" }
     );
   };
-  const onEmojiClick = (event, emojiObject) => {
-    setSelectEmoji(false);
-    setCommentText(commentText + emojiObject.emoji);
-  };
   const onEmojiEditClick = (event, emojiObject) => {
     setSelectEmojiEdit(false);
     setCommentEditText(commentEditText + emojiObject.emoji);
   };
+
   const loadComment = async (postId) => {
     const dataComment = await DashboardApi.loadCommentByPostId(
       postId,
@@ -99,9 +99,8 @@ export const Comment = (props) => {
 
   useEffect(() => {
     loadComment(props.data.id);
-    console.log(comment ?? "");
   }, [props.data.id, updateComment, editComment]);
-  console.log(comment ?? "");
+
   const viewComment = (data) => {
     return data?.map((data) => {
       return (
@@ -117,9 +116,10 @@ export const Comment = (props) => {
                   }
                   alt="Girl in a jacket"
                   className="comment-img"
+                   onClick={() => props.handleClickProfile(data?.id)}
                 />
                 <Card className="card-load-comment">
-                  <h1>{data?.name}</h1>
+                  <h1 onClick={() => props.handleClickProfile(data?.id)}>{data?.name}</h1>
                   <p>{data?.pivot?.comment}</p>
                 </Card>
                 <CommentAction
@@ -127,7 +127,6 @@ export const Comment = (props) => {
                   setEditComment={setEditComment.bind(setEditComment)}
                   editComment={editComment}
                   data={data}
-                  dataProps={props.data}
                   updateComment={() =>
                     setUpdateComment(updateComment ? false : true)
                   }
@@ -135,60 +134,60 @@ export const Comment = (props) => {
               </div>
             </Form>
           ) : (
-              <Form className="pl-3 pr-3">
-                <div className="comment">
-                  <img
-                    src={
-                      data?.profil_picture.includes("http")
-                        ? data.profil_picture
-                        : `${CONFIG.BASE_URL_API_IMAGE}/${data.profil_picture}`
-                    }
-                    alt="Girl in a jacket"
-                    className="comment-img"
-                  />
-                  <Form.Control
-                    placeholder="Tulis komentar kamu"
-                    className="comment-text"
-                    value={
-                      commentEditText !== ""
-                        ? commentEditText
-                        : data?.pivot?.comment
-                    }
-                    as="textarea"
-                    id={editComment}
-                    rows={commentLength}
-                    onKeyPress={(e) => handleEditEnter(e)}
-                    onChange={handleEditComment}
-                  />
+            <Form className="pl-3 pr-3">
+              <div className="comment">
+                <img
+                  src={
+                    data?.profil_picture.includes("http")
+                      ? data.profil_picture
+                      : `${CONFIG.BASE_URL_API_IMAGE}/${data.profil_picture}`
+                  }
+                  alt="Girl in a jacket"
+                  className="comment-img"
+                />
+                <Form.Control
+                  placeholder="Tulis komentar kamu"
+                  className="comment-text"
+                  value={
+                    commentEditText !== ""
+                      ? commentEditText
+                      : data?.pivot?.comment
+                  }
+                  as="textarea"
+                  id={editComment}
+                  rows={commentLength}
+                  onKeyPress={(e) => handleEnterEditComment(e)}
+                  onChange={handleEditComment}
+                />
 
-                  <FontAwesomeIcon
-                    icon={faSmile}
-                    className="comment-icon"
-                    style={emojiClickStyle}
-                    onClick={() =>{
-                      setCommentEditText(data?.pivot?.comment)
-                      setSelectEmojiEdit(selectEmojiEdit ? false : true)
-                    }
-                    }
+                <FontAwesomeIcon
+                  icon={faSmile}
+                  className="comment-icon"
+                  style={emojiClickStyle}
+                  onClick={() => {
+                    setCommentEditText(data?.pivot?.comment);
+                    setSelectEmojiEdit(selectEmojiEdit ? false : true);
+                  }}
+                />
+                <Form.Text className="comment-text-muted">
+                  Tekan Enter untuk mengirim
+                </Form.Text>
+                {selectEmojiEdit && (
+                  <Picker
+                    onEmojiClick={onEmojiEditClick}
+                    id={data?.pivot?.comment}
+                    disableSkinTonePicker
+                    disableSearchBar="true"
                   />
-                  <Form.Text className="comment-text-muted">
-                    Tekan Enter untuk mengirim
-                  </Form.Text>
-                  {selectEmojiEdit && (
-                    <Picker
-                      onEmojiClick={onEmojiEditClick}
-                      id={data?.pivot?.comment}
-                      disableSkinTonePicker
-                      disableSearchBar="true"
-                    />
-                  )}
-                </div>
-              </Form>
+                )}
+              </div>
+            </Form>
           )}
         </>
       );
     });
   };
+  
   return (
     <div>
       {viewComment(comment)}
@@ -196,9 +195,9 @@ export const Comment = (props) => {
         <div className="comment">
           <img
             src={
-              props.data?.user?.profil_picture?.includes("http")
-                ? props.data?.user?.profil_picture
-                : `${CONFIG.BASE_URL_API_IMAGE}/${props.data?.user?.profil_picture}`
+              props.profilData?.profil_picture?.includes("http")
+                ? props.profilData?.profil_picture
+                : `${CONFIG.BASE_URL_API_IMAGE}/${props.profilData?.profil_picture}`
             }
             alt="Girl in a jacket"
             className="comment-img"
@@ -210,7 +209,7 @@ export const Comment = (props) => {
             as="textarea"
             id={props.data.id}
             rows={commentLength}
-            onKeyPress={(e) => handleEnter(e)}
+            onKeyPress={(e) => handleEnterComment(e)}
             onChange={handleComment}
           />
 

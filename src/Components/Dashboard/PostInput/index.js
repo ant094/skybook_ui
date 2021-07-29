@@ -9,7 +9,9 @@ import { useDropzone } from "react-dropzone";
 import "../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import DashboardApi from "../../../Api/api-dashboard";
 import CONFIG from "../../../Config";
+
 export const PostInput = (props) => {
+
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
   const [show, setShow] = useState(false);
   const [fileInput, setFileInput] = useState("");
@@ -17,10 +19,11 @@ export const PostInput = (props) => {
   const [toolbarHidden, setToolbarHidden] = useState(true);
   const [postErrorMessage, setPostErrorMessage] = useState("");
   const [modeEdit, setModeEdit] = useState(true);
-
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [convertedContent, setConvertedContent] = useState(null);
+
   const files = acceptedFiles.map((file) => (
     <img
       src={URL.createObjectURL(file)}
@@ -29,7 +32,7 @@ export const PostInput = (props) => {
     />
   ));
   const filesEdit = () => {
-    if (acceptedFiles.length === 0) {
+    if (fileInput === "") {
       return (
         <img
           src={`${CONFIG.BASE_URL_API_IMAGE}/${imageEdit}`}
@@ -60,30 +63,34 @@ export const PostInput = (props) => {
     await setImageEdit(response.image);
   };
 
-  const handleClose = () => {
+  const handleCloseModalPost = () => {
     setShow(false);
     setToolbarHidden(true);
+    setModeEdit(true)
     setFileInput("");
     setPostErrorMessage("");
     props.closeEditMode();
     setEditorState(EditorState.createEmpty());
   };
-
-  const [convertedContent, setConvertedContent] = useState(null);
+  
   const handleEditorChange = (state) => {
     setToolbarHidden(false);
     setEditorState(state);
     convertContentToHTML();
   };
+
+  // Convert Data Html In database to string
   const convertContentToHTML = () => {
     let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
     setConvertedContent(currentContentAsHTML);
   };
+
   if (props.editMode && modeEdit) {
     getEditvalue(props.editModeId);
     convertContentToHTML();
     setModeEdit(false);
   }
+
   const inputPost = async () => {
     const responseInputPost = await DashboardApi.inputPost(
       convertedContent,
@@ -91,11 +98,11 @@ export const PostInput = (props) => {
     );
     if (responseInputPost.success === "Post upload success") {
       props.updateInputPost();
-      handleClose();
+      handleCloseModalPost();
+      handleCloseModalPost();
     }
     setPostErrorMessage(responseInputPost.errors);
   };
-
   const editPost = async () => {
     const responseEditPost = await DashboardApi.postEdit(
       props.editModeId,
@@ -104,10 +111,12 @@ export const PostInput = (props) => {
     );
     if (responseEditPost === "update post success") {
       props.updateInputPost();
-      handleClose();
+      handleCloseModalPost();
+      handleCloseModalPost();
     }
   };
-  const handleSumbitPost = async () => {
+
+  const handleSubmitPost = async () => {
     if (props.editMode) {
       editPost();
     } else {
@@ -115,10 +124,11 @@ export const PostInput = (props) => {
     }
   };
 
-  const handleShow = () => setShow(true);
+  const handleShowModalPost = () => setShow(true);
+
   return (
     <>
-      <Card className="mb-2" onClick={handleShow}>
+      <Card className="mb-2" onClick={handleShowModalPost}>
         <Card.Body className="text-center">
           What's on you mind, {props.data?.name.split(" ")[0]}?
           <FontAwesomeIcon icon={faLongArrowAltUp} className="post-arrow-up" />
@@ -128,7 +138,7 @@ export const PostInput = (props) => {
       <Modal
         show={props.editMode ? props.editMode : show}
         size="md"
-        onHide={handleClose}
+        onHide={handleCloseModalPost}
       >
         <Modal.Header closeButton>
           <Modal.Title>
@@ -140,7 +150,6 @@ export const PostInput = (props) => {
             placeholder={`Apa Yang Ada Dalam Pikiranmu! ${
               props.data?.name.split(" ")[0]
             }`}
-            // editorState={'caption'}
             editorState={editorState}
             toolbarHidden={toolbarHidden}
             wrapperClassName="wrapper-class"
@@ -171,8 +180,8 @@ export const PostInput = (props) => {
               <p className="text-danger">{postErrorMessage?.image}</p>
             )}
             <aside>
-              {fileInput !== "" && <h4>Image Upload</h4>}
-              {fileInput !== "" && files}
+              {(fileInput !== "" && modeEdit) &&  <h4>Image Upload</h4>}
+              {(fileInput !== "" && modeEdit) &&  files}
               {props.editMode && <h4>Image Upload</h4>}
               {props.editMode && filesEdit()}
             </aside>
@@ -182,7 +191,7 @@ export const PostInput = (props) => {
             className="pt-1 pb-1"
             type="submit"
             size=""
-            onClick={() => handleSumbitPost()}
+            onClick={() => handleSubmitPost()}
           >
             Post
           </Button>

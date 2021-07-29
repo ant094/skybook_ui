@@ -3,73 +3,88 @@ import AuthApi from "../../../Api/auth-login";
 import "./index.css";
 import { GoogleLogin } from "react-google-login"; 
 import FacebookLogin from "react-facebook-login";
-import { Form, Button, Toast, Alert } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
-import { ReactContext } from "../../../routes";
 import { Register } from "../../../Components/Auth/Register";
 
 export const Login = (props) => {
+
   const [email, setEmail] = useState("");
-  const [go, setGo] = useState(false)
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  const [showAlertRegister, setShowAlertRegister] = useState(false);
-  const [loginMessage, setloginMessage] = useState(null);
+  const [showAlertRegisterSuccess, setShowAlertRegisterSuccess] = useState(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+  const [login, setLogin] = useState(false);
+  
+  const token = localStorage.getItem('token');
 
-  const handleLogin = async (email, password, handleLoginContext) => {
+  // Main login method
+  const handleLogin = async (email, password) => {
     const loginResponse = await AuthApi.login(email, password);
     if (loginResponse.error) {
-      setloginMessage("User not register");
-       setTimeout(() => {
-         setloginMessage("");
-       }, 5000);
-       
-      setPassword("");
+        helperLoginError()
     }
     if (loginResponse.access_token) {
-      await localStorage.setItem("token", loginResponse.access_token);
-      await handleLoginContext(loginResponse.access_token);
-      if (props?.emailVerify == false) {
-        props?.handleVerifyEmail(
-          props.id,
-          props.hasEmail,
-          loginResponse.access_token
-        );
-        console.log(props.emailVerify);
-      }
+     helperSetToken(loginResponse.access_token);
     }
   };
 
-  const handleSubmit = async (e, data) => {
+  const helperLoginError = () => {
+      setLoginErrorMessage("User not register");
+      setTimeout(() => {
+        setLoginErrorMessage("");
+      }, 5000);
+
+      setPassword("");
+  }
+
+  const helperSetToken = async (token) => {
+     await localStorage.setItem("token", token);
+     const user = await AuthApi.user(token);
+     await localStorage.setItem("id", user?.id);
+     setLogin(true);
+     if (props?.emailVerify == false) {
+       props?.handleVerifyEmail(
+         props.id,
+         props.hasEmail,
+         token
+       );
+     }
+   }
+
+  // Method Login
+  const handleLoginEmail = async (e) => {
     e.preventDefault();
-    handleLogin(email, password, data);
+    handleLogin(email, password);
   };
 
-  const responseGoogle = (response, data) => {
+  const handleLoginGoogle = (response) => {
   const email= response?.profileObj?.email;
     const password = response?.googleId;
-    handleLogin(email, password, data);
+    handleLogin(email, password);
   };
 
-  const responseFacebook = (response, data) => {
+  const handleLoginFacebook = (response) => {
     const email = response.email;
     const password = response.accessToken;
-    handleLogin(email, password, data);
+    handleLogin(email, password);
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  return (
-    <ReactContext.Consumer>
-      {(value) => {
-        const localStorageToken = value.state.token;
+  // Show & Off Modal Register
+  const handleCloseModalRegister = () => setShow(false);
+  const handleShowModalRegister = () => setShow(true);
 
-        if (localStorageToken && (props.emailVerify ?? true)) {
-          return <Redirect to="/dashboard" />;
-        }
         return (
           <>
-            <Alert show={showAlertRegister} variant="success" className="text-center">
+            {(token || login) && (props.emailVerify ?? true) && (
+              <Redirect to="/dashboard" />
+            )}
+
+            <Alert
+              show={showAlertRegisterSuccess}
+              variant="success"
+              className="text-center register-success-alert"
+            >
               Register Success
             </Alert>
             <div className="login">
@@ -81,9 +96,9 @@ export const Login = (props) => {
                 </h2>
               </div>
               <div className="loginForm text-center">
-                <Form onSubmit={(e) => handleSubmit(e, value.handleLogin)}>
+                <Form onSubmit={(e) => handleLoginEmail(e)}>
                   <Form.Text className="text-danger ">
-                    {loginMessage !== "undefined" ? loginMessage : ""}
+                    {loginErrorMessage !== "undefined" ? loginErrorMessage : ""}
                   </Form.Text>
                   <Form.Group className="mb-3">
                     <Form.Control
@@ -116,12 +131,8 @@ export const Login = (props) => {
                     <GoogleLogin
                       clientId="458456914945-n6m3evan8k2ovagei6mnd4o3tpvlkfed.apps.googleusercontent.com"
                       buttonText="Login"
-                      onSuccess={(response) =>
-                        responseGoogle(response, value.handleLogin)
-                      }
-                      onFailure={(response) =>
-                        responseGoogle(response, value.handleLogin)
-                      }
+                      onSuccess={(response) => handleLoginGoogle(response)}
+                      onFailure={(response) => handleLoginGoogle(response)}
                       cookiePolicy={"single_host_origin"}
                     />
                     <FacebookLogin
@@ -130,14 +141,12 @@ export const Login = (props) => {
                       cssClass="my-facebook-button-class"
                       textButton=" Login"
                       icon="fa-facebook"
-                      callback={(response) =>
-                        responseFacebook(response, value.handleLogin)
-                      }
+                      callback={(response) => handleLoginFacebook(response)}
                     />
                     <hr />
                     <Button
                       variant="primary"
-                      onClick={handleShow}
+                      onClick={handleShowModalRegister}
                       id="register"
                     >
                       Buat Akun Baru
@@ -145,16 +154,18 @@ export const Login = (props) => {
                   </div>
                 </Form>
               </div>
-              <Register show={show} handleClose={handleClose} hadleShowAlertRegister={()=>{
-                 setShowAlertRegister(true);
-                 setTimeout(() => {
-                   setShowAlertRegister(false);
-                 }, 5000);
-              }} />
+              <Register
+                show={show}
+                handleClose={handleCloseModalRegister}
+                hadleShowAlertRegister={() => {
+                  setShowAlertRegisterSuccess(true);
+                  setTimeout(() => {
+                    setShowAlertRegisterSuccess(false);
+                  }, 5000);
+                }}
+              />
             </div>
           </>
         );
-      }}
-    </ReactContext.Consumer>
-  );
+    
 };

@@ -53,3 +53,7 @@ button#register {
     border: 1px solid #23BE7E;
     margin: 0 20%;
 }
+.register-success-alert{
+    position: fixed;
+    width: 100%;
+}
