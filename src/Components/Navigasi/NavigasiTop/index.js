@@ -113,6 +113,7 @@ export const NavigasiTop = (props) => {
                             : `${notification.user.name} `}
                         </b>
                         {status}
+                        <b>{` ${notification.time}`}</b>
                       </p>
                     </ListGroup.Item>
                   );
