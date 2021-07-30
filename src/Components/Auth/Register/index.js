@@ -22,8 +22,9 @@ export const Register = (props) => {
     } else if (registerStatus.error === "user registered") {
       setRegisterErrorMessage("");
       setRegisterErrorMessageAlready(registerStatus);
-    } else {
-      handleCloseRegisterModal();
+    } else if (registerStatus.success === "register user success") {
+      await handleCloseRegisterModal();
+      props.hadleShowAlertRegister();
     }
   };
 
@@ -31,11 +32,11 @@ export const Register = (props) => {
   const handleRegisterWithProvider = async (data, provider) => {
     const registerStatus = await AuthApi.registerWithProvider(data, provider);
     if (registerStatus.error === "user registered") {
-      console.log(registerStatus.error);
       setRegisterErrorMessage("");
       setRegisterErrorMessageAlready(registerStatus);
-    } else {
-      handleCloseRegisterModal();
+    }else if(registerStatus.success === "register user success") {
+      await handleCloseRegisterModal();
+      props.hadleShowAlertRegister();
     }
   };
 
@@ -68,7 +69,6 @@ export const Register = (props) => {
 
   const handleCloseRegisterModal = () => {
     props.handleClose();
-    props.hadleShowAlertRegister();
     setRegisterErrorMessage("");
     setRegisterErrorMessageAlready("");
   };

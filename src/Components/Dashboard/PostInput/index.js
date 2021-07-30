@@ -93,7 +93,7 @@ export const PostInput = (props) => {
 
   const inputPost = async () => {
     const responseInputPost = await DashboardApi.inputPost(
-      convertedContent,
+      toolbarHidden ? "" : convertedContent,
       fileInput
     );
     if (responseInputPost.success === "Post upload success") {
@@ -106,7 +106,7 @@ export const PostInput = (props) => {
   const editPost = async () => {
     const responseEditPost = await DashboardApi.postEdit(
       props.editModeId,
-      convertedContent,
+      toolbarHidden ? "" : convertedContent,
       fileInput
     );
     if (responseEditPost === "update post success") {
